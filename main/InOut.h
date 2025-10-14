@@ -49,3 +49,6 @@ void DeleteObjectById(std::unordered_map<int, T>& objects, std::unordered_set<in
         }
     }
 }
+
+void ChangePipe(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int>& res);
+void ChangeKS(std::unordered_map<int, KS>& KSmap, std::unordered_set<int>& res);
