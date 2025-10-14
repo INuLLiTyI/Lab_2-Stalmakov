@@ -57,3 +57,18 @@ std::unordered_set<int> FindPipeFilter(const std::unordered_map<int, Pipe>& Pipe
 
 template<typename T>
 using filterks = bool(*)(const KS& g, T param);
+
+template<typename T>
+std::unordered_set<int> FindKSFilter(const std::unordered_map<int, KS>& KSmap, filterks<T> f, T param)
+{
+	std::unordered_set <int> res;
+	for (auto& g : KSmap)
+	{
+		if (f(g.second, param)) {
+			res.emplace(g.first);
+			std::cout << g.second;
+		}
+	}
+
+	return res;
+}
