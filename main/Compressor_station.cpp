@@ -54,7 +54,7 @@ void CompressorStation::Print() const {
     cout << "Name: " << Name << endl;
     cout << "Workshops: " << WorkshopsInWork << "/" << AmountOfWorkshops << " working" << endl;
     cout << "Efficiency Level: " << EfficiencyLevel << endl;
-    cout << "Utilization: " << GetPercent() << "%" << endl; // Теперь будет работать
+    cout << "Utilization: " << GetPercent() << "%" << endl; 
 }
 
 ostream& operator<<(ostream& out, const CompressorStation& cs) {
