@@ -65,3 +65,25 @@ void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& K
     }
     fin.close();
 }
+
+void ChangePipe(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int>& res) {
+    std::string idInput;
+    std::cout << "Enter object IDs to modify (space separated): ";
+    INPUT_LINE(std::cin, idInput);
+
+    std::istringstream idStream(idInput);
+    std::unordered_set<int> ids;
+    int id;
+    while (idStream >> id) {
+        ids.emplace(id);
+    }
+
+    for (int id : ids) {
+        if (res.find(id) == res.end()) {
+            std::cout << "Object with ID " << id << " not found.\n";
+            continue;
+        }
+        Pipemap.at(id).changeofstate();
+        std::cout << "Object with ID " << id << " successfully modified\n";
+    }
+}
