@@ -39,3 +39,18 @@ void delet(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res)
 
 template<typename T>
 using filterpipe = bool(*)(const Pipe& p, T param);
+
+template<typename T>
+std::unordered_set<int> FindPipeFilter(const std::unordered_map<int, Pipe>& Pipemap, filterpipe<T> f, T param)
+{
+	std::unordered_set <int> res;
+	for (auto& p : Pipemap)
+	{
+		if (f(p.second, param)) {
+			res.emplace(p.first);
+			std::cout << p.second;
+		}
+	}
+
+	return res;
+}
