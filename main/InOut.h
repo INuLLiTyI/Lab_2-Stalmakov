@@ -1,16 +1,15 @@
 #pragma once
 #include "Pipe.h"
-#include "KS.h"
+#include "Compressor_Station.h"
 #include <unordered_map>
 #include <sstream> 
 #include <vector>
 #include "Tools.h"
 
-std::unordered_map<int, KS> KSCreate(std::unordered_map<int, KS>& m);
+std::unordered_map<int, CompressorStation> KSCreate(std::unordered_map<int, CompressorStation>& m);
 std::unordered_map<int, Pipe> PipesCreate(std::unordered_map<int, Pipe>& m);
 void PipesPrint(std::unordered_map<int, Pipe>& m);
-void KSPrint(std::unordered_map<int, KS>& m);
-
+void KSPrint(std::unordered_map<int, CompressorStation>& m);
 
 template <typename T>
 std::unordered_map<int, T> LoadObject(std::unordered_map<int, T>& Object, int count, std::ifstream& fin) {
@@ -22,7 +21,7 @@ std::unordered_map<int, T> LoadObject(std::unordered_map<int, T>& Object, int co
     return Object;
 }
 
-void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& KSmap);
+void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, CompressorStation>& KSmap);
 
 template <typename T>
 void DeleteObjectById(std::unordered_map<int, T>& objects, std::unordered_set<int>& res) {
@@ -51,4 +50,4 @@ void DeleteObjectById(std::unordered_map<int, T>& objects, std::unordered_set<in
 }
 
 void ChangePipe(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int>& res);
-void ChangeKS(std::unordered_map<int, KS>& KSmap, std::unordered_set<int>& res);
+void ChangeKS(std::unordered_map<int, CompressorStation>& KSmap, std::unordered_set<int>& res);
