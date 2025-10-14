@@ -36,3 +36,6 @@ bool checknameks(const KS& g, std::string param);
 bool workshops(const KS& g, int param);
 void edit(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res);
 void delet(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res);
+
+template<typename T>
+using filterpipe = bool(*)(const Pipe& p, T param);
