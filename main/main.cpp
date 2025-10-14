@@ -2,30 +2,40 @@
 #include <fstream>
 #include <limits>
 #include <iomanip>
+#include <unordered_map>
+#include <unordered_set>
+#include <sstream>
+#include <string>
 #include "pipe.h"
 #include "Compressor_Station.h"
+#include "Tools.h"
 
 using namespace std;
 
+// Объявления функций
 void printMenu();
 void clearInput();
-void addPipe(Pipe& pipe);
-void addCompressorStation(CompressorStation& cs);
-void connectPipeToStation(Pipe& pipe, CompressorStation& cs);
-void clearDataFile(Pipe& pipe, CompressorStation& cs);
+void addPipe(unordered_map<int, Pipe>& pipes);
+void addCompressorStation(unordered_map<int, CompressorStation>& stations);
+void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations);
+void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations);
+void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations);
+void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations);
+
+// Вспомогательные функции для поиска
+template<typename T>
+unordered_set<int> findPipesByFilter(const unordered_map<int, Pipe>& pipes, bool(*filter)(const Pipe&, T), T param);
+template<typename T>
+unordered_set<int> findStationsByFilter(const unordered_map<int, CompressorStation>& stations, bool(*filter)(const CompressorStation&, T), T param);
 
 void printMenu() {
     cout << "\n=== Pipeline Management System ===\n";
     cout << "1. Add Pipe\n";
     cout << "2. Add Compressor Station\n";
     cout << "3. View all objects\n";
-    cout << "4. Edit Pipe\n";
-    cout << "5. Edit Compressor Station\n";
-    cout << "6. Save\n";
-    cout << "7. Load\n";
-    cout << "8. Connect Pipe to Station\n";
-    cout << "9. Disconnect Pipe\n";
-    cout << "10. Clear File\n";
+    cout << "4. Search and Edit\n";
+    cout << "5. Save\n";
+    cout << "6. Load\n";
     cout << "0. Exit\n";
     cout << "Choose option: ";
 }
@@ -35,8 +45,10 @@ void clearInput() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-void addPipe(Pipe& pipe) {
+void addPipe(unordered_map<int, Pipe>& pipes) {
     cout << "\n=== Add New Pipe ===\n";
+
+    Pipe newPipe;
     string name;
     float length;
     int diameter;
@@ -57,16 +69,23 @@ void addPipe(Pipe& pipe) {
         clearInput();
     }
 
-    pipe.SetName(name);
-    pipe.SetLength(length);
-    pipe.SetDiameter(diameter);
-    pipe.SetInRepair(false);
+    newPipe.SetName(name);
+    newPipe.SetLength(length);
+    newPipe.SetDiameter(diameter);
+    newPipe.SetInRepair(false);
 
-    cout << "Pipe added successfully!\n";
+    // Генерация ID (можно улучшить)
+    static int nextPipeId = 1;
+    pipes[nextPipeId] = newPipe;
+
+    cout << "Pipe added successfully! ID: " << nextPipeId << "\n";
+    nextPipeId++;
 }
 
-void addCompressorStation(CompressorStation& cs) {
+void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
     cout << "\n=== Add New Compressor Station ===\n";
+
+    CompressorStation newStation;
     string name;
     int totalWorkshops, workingWorkshops, efficiency;
 
@@ -92,53 +111,146 @@ void addCompressorStation(CompressorStation& cs) {
         clearInput();
     }
 
-    cs.SetName(name);
-    cs.SetWorkshops(totalWorkshops, workingWorkshops);
-    cs.SetEfficiency(efficiency);
+    newStation.SetName(name);
+    newStation.SetWorkshops(totalWorkshops, workingWorkshops);
+    newStation.SetEfficiency(efficiency);
 
-    cout << "Compressor Station added successfully!\n";
+    // Генерация ID
+    static int nextStationId = 1;
+    stations[nextStationId] = newStation;
+
+    cout << "Compressor Station added successfully! ID: " << nextStationId << "\n";
+    nextStationId++;
 }
 
-void connectPipeToStation(Pipe& pipe, CompressorStation& cs) {
-    if (cs.GetId() != 0) {
-        pipe.ConnectToStation(cs.GetId());
-        cout << "Pipe connected to station " << cs.GetId() << endl;
+void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
+    cout << "\n=== All Objects ===\n";
+
+    if (pipes.empty()) {
+        cout << "No pipes available.\n";
     }
     else {
-        cout << "Create compressor station first!" << endl;
+        cout << "--- Pipes (" << pipes.size() << ") ---\n";
+        for (const auto& [id, pipe] : pipes) {
+            cout << "ID: " << id << " - ";
+            pipe.Print();
+        }
+    }
+
+    if (stations.empty()) {
+        cout << "No compressor stations available.\n";
+    }
+    else {
+        cout << "\n--- Compressor Stations (" << stations.size() << ") ---\n";
+        for (const auto& [id, station] : stations) {
+            cout << "ID: " << id << " - ";
+            station.Print();
+        }
     }
 }
 
-void clearDataFile(Pipe& pipe, CompressorStation& cs) {
-    cout << "Are you sure you want to clear data.txt? (y/n): ";
-    char confirm;
-    cin >> confirm;
+void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
+    string filename;
+    cout << "Enter filename: ";
+    clearInput();
+    getline(cin, filename);
 
-    if (confirm == 'y' || confirm == 'Y') {
-        ofstream file("data.txt", ios::trunc);
-        if (file) {
-            file.close();
-            cout << "File data.txt cleared successfully!\n";
-
-
-            Pipe newPipe;
-            CompressorStation newCS;
-            pipe = newPipe;
-            cs = newCS;
-            cout << "Memory data also cleared!\n";
+    ofstream out(filename);
+    if (out) {
+        // Сохраняем количество труб
+        out << pipes.size() << endl;
+        for (const auto& [id, pipe] : pipes) {
+            out << pipe << endl;
         }
-        else {
-            cout << "Error clearing file!\n";
+
+        // Сохраняем количество станций
+        out << stations.size() << endl;
+        for (const auto& [id, station] : stations) {
+            out << station << endl;
         }
+
+        cout << "Data saved successfully to " << filename << "!\n";
     }
     else {
-        cout << "Operation cancelled.\n";
+        cout << "Error saving data to " << filename << "!\n";
+    }
+}
+
+void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations) {
+    string filename;
+    cout << "Enter filename: ";
+    clearInput();
+    getline(cin, filename);
+
+    ifstream in(filename);
+    if (in) {
+        pipes.clear();
+        stations.clear();
+
+        int pipeCount, stationCount;
+
+        // Загружаем трубы
+        in >> pipeCount;
+        for (int i = 0; i < pipeCount; i++) {
+            Pipe pipe;
+            in >> pipe;
+            // Здесь нужно получить ID из pipe или генерировать новый
+            static int nextId = 1;
+            pipes[nextId++] = pipe;
+        }
+
+        // Загружаем станции
+        in >> stationCount;
+        for (int i = 0; i < stationCount; i++) {
+            CompressorStation station;
+            in >> station;
+            static int nextId = 1;
+            stations[nextId++] = station;
+        }
+
+        cout << "Data loaded successfully from " << filename << "!\n";
+    }
+    else {
+        cout << "File " << filename << " not found!\n";
+    }
+}
+
+void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations) {
+    int choice;
+    cout << "\n=== Search and Edit ===\n";
+    cout << "1. Search Pipes by Name\n";
+    cout << "2. Search Pipes by Repair Status\n";
+    cout << "3. Search Stations by Name\n";
+    cout << "4. Search Stations by Workshop Count\n";
+    cout << "0. Back to Main Menu\n";
+    cout << "Choose option: ";
+
+    cin >> choice;
+
+    switch (choice) {
+    case 1: {
+        if (pipes.empty()) {
+            cout << "No pipes available.\n";
+            break;
+        }
+        string name;
+        cout << "Enter pipe name to search: ";
+        clearInput();
+        getline(cin, name);
+
+        // Здесь должна быть реализация поиска по имени
+        // и дальнейшее редактирование/удаление
+        break;
+    }
+          // Аналогично для других случаев поиска
+    default:
+        cout << "Invalid choice!\n";
     }
 }
 
 int main() {
-    Pipe pipe;
-    CompressorStation cs;
+    unordered_map<int, Pipe> pipes;
+    unordered_map<int, CompressorStation> stations;
     int choice;
 
     while (true) {
@@ -151,120 +263,30 @@ int main() {
         }
 
         switch (choice) {
-        case 1: {
-            addPipe(pipe);
+        case 1:
+            addPipe(pipes);
             break;
-        }
-        case 2: {
-            addCompressorStation(cs);
+        case 2:
+            addCompressorStation(stations);
             break;
-        }
-        case 3: {
-            cout << "\n=== All Objects ===\n";
-            if (pipe.GetName() != "None") {
-                cout << "--- Pipe ---\n";
-                pipe.Print();
-            }
-            else {
-                cout << "No pipe data available.\n";
-            }
-
-            if (cs.GetName() != "None") {
-                cout << "\n--- Compressor Station ---\n";
-                cs.Print();
-            }
-            else {
-                cout << "No compressor station data available.\n";
-            }
+        case 3:
+            viewAllObjects(pipes, stations);
             break;
-        }
-        case 4: {
-            if (pipe.GetName() != "None") {
-                pipe.Edit();
-            }
-            else {
-                cout << "No pipe to edit! Please add a pipe first.\n";
-            }
+        case 4:
+            searchAndEdit(pipes, stations);
             break;
-        }
-        case 5: {
-            if (cs.GetName() != "None") {
-                int action;
-                cout << "1. Start workshop\n2. Stop workshop\nChoose action: ";
-                if (cin >> action) {
-                    if (action == 1) cs.StartWorkshop();
-                    else if (action == 2) cs.StopWorkshop();
-                    else cout << "Invalid action!\n";
-                }
-                else {
-                    clearInput();
-                    cout << "Invalid input!\n";
-                }
-            }
-            else {
-                cout << "No compressor station to edit! Please add a station first.\n";
-            }
+        case 5:
+            saveToFile(pipes, stations);
             break;
-        }
-        case 6: {
-            ofstream out("data.txt");
-            if (out) {
-                out << pipe << endl << cs;
-                cout << "Data saved successfully to data.txt!\n";
-            }
-            else {
-                cout << "Error saving data!\n";
-            }
+        case 6:
+            loadFromFile(pipes, stations);
             break;
-        }
-        case 7: {
-            ifstream in("data.txt");
-            if (in) {
-                in >> pipe >> cs;
-                cout << "Data loaded successfully from data.txt!\n";
-            }
-            else {
-                cout << "File data.txt not found! ";
-                cout << "Please save data first or create the file manually.\n";
-
-                ofstream create_file("data.txt");
-                if (create_file) {
-                    cout << "Empty data.txt created. Please save data first.\n";
-                }
-            }
-            break;
-        }
-        case 8: {
-            if (pipe.GetName() != "None" && cs.GetName() != "None") {
-                connectPipeToStation(pipe, cs);
-            }
-            else {
-                cout << "Create pipe and station first!" << endl;
-            }
-            break;
-        }
-        case 9: {
-            if (pipe.IsConnected()) {
-                pipe.Disconnect();
-                cout << "Pipe disconnected from station" << endl;
-            }
-            else {
-                cout << "Pipe is not connected to any station" << endl;
-            }
-            break;
-        }
-        case 10: {
-            clearDataFile(pipe, cs);
-            break;
-        }
-        case 0: {
+        case 0:
             cout << "Exiting program.\n";
             return 0;
-        }
-        default: {
+        default:
             cout << "Invalid choice! Please try again.\n";
             break;
-        }
         }
     }
 }
