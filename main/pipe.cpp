@@ -2,6 +2,8 @@
 #include "pipe.h"
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+#include "Tools.h"
 using namespace std;
 
 int Pipe::maxId = 0;
@@ -19,7 +21,7 @@ Pipe::Pipe()
 int Pipe::GetId() const { return id; }
 int Pipe::GetMaxId() { return maxId; }
 string Pipe::GetName() const { return Name; }
-bool Pipe::GetStatement() const { return InRepair; }
+bool Pipe::GetState() const { return InRepair; }
 float Pipe::GetLength() const { return Length; }
 int Pipe::GetDiameter() const { return Diameter; }
 bool Pipe::IsConnected() const { return connectedStationId != 0; }
@@ -38,6 +40,10 @@ void Pipe::ConnectToStation(int stationId) {
 void Pipe::Disconnect() {
     connectedStationId = 0;
     InRepair = true;
+}
+
+void Pipe::changeofstate() {
+    InRepair = !InRepair;
 }
 
 void Pipe::Edit() {
@@ -82,4 +88,28 @@ istream& operator>>(istream& in, Pipe& pipe) {
     getline(in, pipe.Name);
     in >> pipe.Length >> pipe.Diameter >> pipe.InRepair >> pipe.connectedStationId;
     return in;
+}
+
+ifstream& operator>>(ifstream& fin, Pipe& p) {
+    fin >> p.id;
+    fin >> std::ws;
+    getline(fin, p.Name);
+    fin >> p.Length;
+    fin >> p.Diameter;
+    fin >> p.InRepair;
+    fin >> p.connectedStationId;
+    if (p.id > p.maxId) {
+        p.maxId = p.id;
+    }
+    return fin;
+}
+
+ofstream& operator<<(ofstream& fout, const Pipe& p) {
+    fout << p.id << endl
+        << p.Name << endl
+        << p.Length << endl
+        << p.Diameter << endl
+        << p.InRepair << endl
+        << p.connectedStationId << endl;
+    return fout;
 }
