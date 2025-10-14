@@ -1,0 +1,17 @@
+﻿  Compressor_station.cpp
+C:\Users\Lenovo\source\repos\INuLLiTyI\Lab_2-Stalmakov\Lab_2-Stalmakov\main\Compressor_station.cpp(1,10): error C1083: Не удается открыть файл включение: Compressor_station.h: No such file or directory,
+  InOut.cpp
+\Lab_2-Stalmakov\main\InOut.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\InOut.cpp: No such file or directory,
+  Tools.cpp
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/InOut.cpp")
+  
+\Lab_2-Stalmakov\main\Tools.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\Tools.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/Tools.cpp")
+  
+  main.cpp
+\Lab_2-Stalmakov\main\main.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\main.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/main.cpp")
+  
+  pipe.cpp
+C:\Users\Lenovo\source\repos\INuLLiTyI\Lab_2-Stalmakov\Lab_2-Stalmakov\main\pipe.cpp(2,10): error C1083: Не удается открыть файл включение: pipe.h: No such file or directory,
+  Создание кода...
