@@ -28,3 +28,11 @@ public:
 		stream.rdbuf(dest.rdbuf());
 	}
 };
+
+bool checknamepipe(const Pipe& p, std::string param);
+bool checkstate(const Pipe& p, bool param);
+
+bool checknameks(const KS& g, std::string param);
+bool workshops(const KS& g, int param);
+void edit(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res);
+void delet(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res);
