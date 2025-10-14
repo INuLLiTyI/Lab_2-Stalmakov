@@ -87,3 +87,33 @@ void ChangePipe(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int>&
         std::cout << "Object with ID " << id << " successfully modified\n";
     }
 }
+
+void ChangeKS(std::unordered_map<int, KS>& KSmap, std::unordered_set<int>& res) {
+    std::string idInput;
+    std::cout << "Enter object IDs for modification (space separated): ";
+    INPUT_LINE(std::cin, idInput);
+
+    std::istringstream idStream(idInput);
+    std::unordered_set<int> ids;
+    int id;
+    while (idStream >> id) {
+        ids.emplace(id);
+    }
+    int change;
+    std::cout << "Enter number of workshops: ";
+    change = GetCorrectNumber(0, 100);
+
+    for (int id : ids) {
+        if (res.find(id) == res.end()) {
+            std::cout << "Object with ID " << id << " not found.\n";
+            continue;
+        }
+
+        if (KSmap.at(id).UpdateWorkshopsInUse(change)) {
+            std::cout << "Object with ID " << id << " successfully modified\n";
+        }
+        else {
+            std::cout << "Object modification error." << std::endl;
+        }
+    }
+}
