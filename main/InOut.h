@@ -23,3 +23,29 @@ std::unordered_map<int, T> LoadObject(std::unordered_map<int, T>& Object, int co
 }
 
 void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& KSmap);
+
+template <typename T>
+void DeleteObjectById(std::unordered_map<int, T>& objects, std::unordered_set<int>& res) {
+    std::string idInput;
+    std::cout << "Enter object IDs for deletion (space separated): ";
+    INPUT_LINE(std::cin, idInput);
+
+    std::istringstream idStream(idInput);
+    std::unordered_set<int> ids;
+    int id;
+    while (idStream >> id) {
+        ids.emplace(id);
+    }
+
+    for (int id : ids) {
+        auto it = objects.find(id);
+        if (res.find(id) == res.end()) {
+            std::cout << "Object with ID " << id << " not found.\n";
+            continue;
+        }
+        if (it != objects.end()) {
+            objects.erase(it);
+            std::cout << "Object with ID " << id << " successfully deleted.\n";
+        }
+    }
+}
