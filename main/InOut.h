@@ -11,6 +11,7 @@ std::unordered_map<int, Pipe> PipesCreate(std::unordered_map<int, Pipe>& m);
 void PipesPrint(std::unordered_map<int, Pipe>& m);
 void KSPrint(std::unordered_map<int, KS>& m);
 
+
 template <typename T>
 std::unordered_map<int, T> LoadObject(std::unordered_map<int, T>& Object, int count, std::ifstream& fin) {
     for (int i = 0; i < count; i++) {
@@ -20,3 +21,5 @@ std::unordered_map<int, T> LoadObject(std::unordered_map<int, T>& Object, int co
     }
     return Object;
 }
+
+void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& KSmap);
