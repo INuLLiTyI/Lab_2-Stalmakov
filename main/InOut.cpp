@@ -40,3 +40,28 @@ void KSPrint(std::unordered_map<int, KS>& m) {
         std::cout << KS.second;
     }
 }
+
+void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& KSmap) {
+    std::ifstream fin;
+    std::string data;
+
+    std::cout << "Input filename: ";
+    INPUT_LINE(std::cin, data);
+
+    fin.open(data);
+
+    if (fin.is_open()) {
+        int countpipes;
+        fin >> countpipes;
+        LoadObject(Pipemap, countpipes, fin);
+        int countks;
+        fin >> countks;
+        LoadObject(KSmap, countks, fin);
+
+        std::cout << "Data added succesfully!" << std::endl;
+    }
+    else {
+        std::cout << "Error occured! Please, check if the input format is correct." << std::endl;
+    }
+    fin.close();
+}
