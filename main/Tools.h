@@ -54,3 +54,6 @@ std::unordered_set<int> FindPipeFilter(const std::unordered_map<int, Pipe>& Pipe
 
 	return res;
 }
+
+template<typename T>
+using filterks = bool(*)(const KS& g, T param);
