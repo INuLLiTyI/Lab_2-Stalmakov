@@ -12,8 +12,8 @@ std::unordered_map<int, Pipe> PipesCreate(std::unordered_map<int, Pipe>& m) {
     return m;
 }
 
-std::unordered_map<int, KS> KSCreate(std::unordered_map<int, KS>& m) {
-    KS g;
+std::unordered_map<int, CompressorStation> KSCreate(std::unordered_map<int, CompressorStation>& m) {
+    CompressorStation g;
     std::cin >> g;
     m.emplace(g.GetId(), g);
     return m;
@@ -30,7 +30,7 @@ void PipesPrint(std::unordered_map<int, Pipe>& m) {
     }
 }
 
-void KSPrint(std::unordered_map<int, KS>& m) {
+void KSPrint(std::unordered_map<int, CompressorStation>& m) {
     if (m.empty()) {
         std::cout << "No any CS existing!" << std::endl;
         std::cout << '\n';
@@ -41,7 +41,7 @@ void KSPrint(std::unordered_map<int, KS>& m) {
     }
 }
 
-void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& KSmap) {
+void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, CompressorStation>& KSmap) {
     std::ifstream fin;
     std::string data;
 
@@ -88,7 +88,7 @@ void ChangePipe(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int>&
     }
 }
 
-void ChangeKS(std::unordered_map<int, KS>& KSmap, std::unordered_set<int>& res) {
+void ChangeKS(std::unordered_map<int, CompressorStation>& KSmap, std::unordered_set<int>& res) {
     std::string idInput;
     std::cout << "Enter object IDs for modification (space separated): ";
     INPUT_LINE(std::cin, idInput);
