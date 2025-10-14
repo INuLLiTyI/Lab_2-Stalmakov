@@ -3,16 +3,15 @@
 #include <fstream>
 #include <string>
 #include <istream>
-#include <unordered_map>
 
 class Pipe {
 private:
     static int maxId;
     int id;
-    std::string Name;
-    float Length;
-    int Diameter;
-    bool InRepair;
+    std::string name;
+    float length;
+    int diameter;
+    bool inRepair;
     int connectedStationId;
 
 public:
@@ -22,7 +21,7 @@ public:
     int GetId() const;
     static int GetMaxId();
     std::string GetName() const;
-    bool GetStatement() const;
+    bool GetState() const;
     float GetLength() const;
     int GetDiameter() const;
     bool IsConnected() const;
@@ -36,10 +35,13 @@ public:
     void ConnectToStation(int stationId);
     void Disconnect();
 
+    void changeofstate();
     void Edit();
     void Print() const;
 
     // Friend functions for I/O
     friend std::ostream& operator<<(std::ostream& out, const Pipe& pipe);
     friend std::istream& operator>>(std::istream& in, Pipe& pipe);
+    friend std::ifstream& operator>>(std::ifstream& fin, Pipe& p);
+    friend std::ofstream& operator<<(std::ofstream& fout, const Pipe& p);
 };
