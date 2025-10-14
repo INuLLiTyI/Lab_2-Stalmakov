@@ -1,7 +1,7 @@
-﻿﻿#pragma once
+﻿#pragma once
 #include <iostream>
 #include "Pipe.h"
-#include "KS.h"
+#include "Compressor_Station.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <chrono>
@@ -32,10 +32,9 @@ public:
 bool checknamepipe(const Pipe& p, std::string param);
 bool checkstate(const Pipe& p, bool param);
 
-bool checknameks(const KS& g, std::string param);
-bool workshops(const KS& g, int param);
+bool checknameks(const CompressorStation& g, std::string param);
+bool workshops(const CompressorStation& g, int param);
 void edit(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res);
-void delet(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int> res);
 
 template<typename T>
 using filterpipe = bool(*)(const Pipe& p, T param);
@@ -51,15 +50,14 @@ std::unordered_set<int> FindPipeFilter(const std::unordered_map<int, Pipe>& Pipe
 			std::cout << p.second;
 		}
 	}
-
 	return res;
 }
 
 template<typename T>
-using filterks = bool(*)(const KS& g, T param);
+using filterks = bool(*)(const CompressorStation& g, T param);
 
 template<typename T>
-std::unordered_set<int> FindKSFilter(const std::unordered_map<int, KS>& KSmap, filterks<T> f, T param)
+std::unordered_set<int> FindKSFilter(const std::unordered_map<int, CompressorStation>& KSmap, filterks<T> f, T param)
 {
 	std::unordered_set <int> res;
 	for (auto& g : KSmap)
@@ -69,7 +67,6 @@ std::unordered_set<int> FindKSFilter(const std::unordered_map<int, KS>& KSmap, f
 			std::cout << g.second;
 		}
 	}
-
 	return res;
 }
 
