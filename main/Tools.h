@@ -72,3 +72,19 @@ std::unordered_set<int> FindKSFilter(const std::unordered_map<int, KS>& KSmap, f
 
 	return res;
 }
+
+template <typename T>
+T GetCorrectNumber(T min, T max)
+{
+	T x;
+	while ((std::cin >> x).fail()
+		|| std::cin.peek() != '\n'
+		|| x < min || x > max)
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Enter a correct value: ";
+	}
+	std::cerr << x << std::endl;
+	return x;
+}
