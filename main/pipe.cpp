@@ -1,4 +1,4 @@
-#include <cmath>
+﻿#include <cmath>
 #include "pipe.h"
 #include <iostream>
 #include <iomanip>
@@ -10,7 +10,7 @@ int Pipe::maxId = 0;
 
 Pipe::Pipe()
 {
-    id = ++maxId;
+    id = 0;
     name = "None";
     length = 0.0f;
     diameter = 0;
@@ -98,8 +98,10 @@ ifstream& operator>>(ifstream& fin, Pipe& p) {
     fin >> p.diameter;
     fin >> p.inRepair;
     fin >> p.connectedStationId;
-    if (p.id > p.maxId) {
-        p.maxId = p.id;
+
+    // ОБНОВЛЯЕМ maxId при загрузке
+    if (p.id > Pipe::maxId) {
+        Pipe::maxId = p.id;
     }
     return fin;
 }

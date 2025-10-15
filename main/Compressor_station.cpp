@@ -3,12 +3,14 @@
 #include <string>
 #include <fstream>
 #include <format>
+using namespace std;
 
 // Инициализация статической переменной
 int CompressorStation::maxId = 0;
 
-CompressorStation::CompressorStation() 
-    : id(++maxId), name(""), workshops(0), workshopsInWork(0), efficiency(0) {}
+CompressorStation::CompressorStation()
+    : id(0), name(""), workshops(0), workshopsInWork(0), efficiency(0) {
+} // id = 0 вместо ++maxId
 
 // Getters
 int CompressorStation::GetId() const {
@@ -76,53 +78,58 @@ bool CompressorStation::UpdateWorkshopsInUse(int change) {
 }
 
 void CompressorStation::Print() const {
-    std::cout << std::format("Compressor Station [ID: {}]: {}\n", id, name);
-    std::cout << std::format("  Total workshops: {}\n", workshops);
-    std::cout << std::format("  Workshops in work: {}\n", workshopsInWork);
-    std::cout << std::format("  Efficiency: {}\n", efficiency);
-    
+    cout << format("Compressor Station [ID: {}]: {}\n", id, name);
+    cout << format("  Total workshops: {}\n", workshops);
+    cout << format("  Workshops in work: {}\n", workshopsInWork);
+    cout << format("  Efficiency: {}\n", efficiency);
+
     if (workshops > 0) {
         double percentage = (static_cast<double>(workshopsInWork) / workshops) * 100;
-        std::cout << std::format("  Percentage of workshops in work: {:.2f}%\n", percentage);
+        cout << format("  Percentage of workshops in work: {:.2f}%\n", percentage);
     }
 }
 
 // Friend functions for I/O
-std::ostream& operator<<(std::ostream& out, const CompressorStation& cs) {
+ostream& operator<<(ostream& out, const CompressorStation& cs) {
     out << "Compressor Station [ID: " << cs.id << "]: " << cs.name << "\n";
     out << "  Workshops: " << cs.workshopsInWork << "/" << cs.workshops << " in use\n";
     out << "  Efficiency: " << cs.efficiency << "\n";
     return out;
 }
 
-std::istream& operator>>(std::istream& in, CompressorStation& cs) {
-    std::cout << "Enter compressor station name: ";
-    std::getline(in, cs.name);
-    
-    std::cout << "Enter total number of workshops: ";
+istream& operator>>(istream& in, CompressorStation& cs) {
+    cout << "Enter compressor station name: ";
+    getline(in, cs.name);
+
+    cout << "Enter total number of workshops: ";
     in >> cs.workshops;
-    
-    std::cout << "Enter number of workshops in work: ";
+
+    cout << "Enter number of workshops in work: ";
     in >> cs.workshopsInWork;
-    
-    std::cout << "Enter efficiency: ";
+
+    cout << "Enter efficiency: ";
     in >> cs.efficiency;
-    
+
     in.ignore(); // очистка буфера
     return in;
 }
 
-std::ifstream& operator>>(std::ifstream& fin, CompressorStation& cs) {
+ifstream& operator>>(ifstream& fin, CompressorStation& cs) {
     fin >> cs.id;
     fin.ignore();
     std::getline(fin, cs.name);
     fin >> cs.workshops;
     fin >> cs.workshopsInWork;
     fin >> cs.efficiency;
+
+    // Обновляем maxId при загрузке
+    if (cs.id > CompressorStation::maxId) {
+        CompressorStation::maxId = cs.id;
+    }
     return fin;
 }
 
-std::ofstream& operator<<(std::ofstream& fout, const CompressorStation& cs) {
+ofstream& operator<<(ofstream& fout, const CompressorStation& cs) {
     fout << cs.id << "\n";
     fout << cs.name << "\n";
     fout << cs.workshops << "\n";

@@ -9,6 +9,7 @@
 #include "pipe.h"
 #include "Compressor_station.h"
 #include "Tools.h"
+#include "InOut.h"
 
 using namespace std;
 
@@ -42,7 +43,6 @@ void clearInput() {
 void addPipe(unordered_map<int, Pipe>& pipes) {
     cout << "\n=== Add New Pipe ===\n";
 
-    Pipe newPipe;
     string name;
     float length;
     int diameter;
@@ -63,24 +63,23 @@ void addPipe(unordered_map<int, Pipe>& pipes) {
         clearInput();
     }
 
+    // Генерация ID
+    int newId = Pipe::GetMaxId() + 1;
+    Pipe newPipe;
     newPipe.SetName(name);
     newPipe.SetLength(length);
     newPipe.SetDiameter(diameter);
     newPipe.SetInRepair(false);
 
-    // Генерация ID
-    static int nextPipeId = 1;
-    pipes[nextPipeId] = newPipe;
+    pipes[newId] = newPipe;
 
-    cout << "Pipe added successfully! ID: " << nextPipeId << "\n";
-    logger.log("Added pipe ID: " + to_string(nextPipeId) + ", Name: " + name);
-    nextPipeId++;
+    cout << "Pipe added successfully! ID: " << newId << "\n";
+    logger.log("Added pipe ID: " + to_string(newId) + ", Name: " + name);
 }
 
 void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
     cout << "\n=== Add New Compressor Station ===\n";
 
-    CompressorStation newStation;
     string name;
     int totalWorkshops, workingWorkshops, efficiency;
 
@@ -106,17 +105,17 @@ void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
         clearInput();
     }
 
+    // Генерация ID
+    int newId = CompressorStation::GetMaxId() + 1;
+    CompressorStation newStation;
     newStation.SetName(name);
     newStation.SetWorkshops(totalWorkshops, workingWorkshops);
     newStation.SetEfficiency(efficiency);
 
-    // Генерация ID
-    static int nextStationId = 1;
-    stations[nextStationId] = newStation;
+    stations[newId] = newStation;
 
-    cout << "Compressor Station added successfully! ID: " << nextStationId << "\n";
-    logger.log("Added compressor station ID: " + to_string(nextStationId) + ", Name: " + name);
-    nextStationId++;
+    cout << "Compressor Station added successfully! ID: " << newId << "\n";
+    logger.log("Added compressor station ID: " + to_string(newId) + ", Name: " + name);
 }
 
 void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
