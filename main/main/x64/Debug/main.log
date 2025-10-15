@@ -1,0 +1,21 @@
+﻿  Compressor_station.cpp
+\Lab_2-Stalmakov\main\Compressor_station.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\Compressor_station.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/Compressor_station.cpp")
+  
+  InOut.cpp
+\Lab_2-Stalmakov\main\InOut.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\InOut.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/InOut.cpp")
+  
+  main.cpp
+\Lab_2-Stalmakov\main\main.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\main.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/main.cpp")
+  
+  pipe.cpp
+\Lab_2-Stalmakov\main\pipe.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\pipe.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/pipe.cpp")
+  
+  Tools.cpp
+\Lab_2-Stalmakov\main\Tools.cpp(1,1): error C1083: Не удается открыть файл источник: ..\..\Lab_2-Stalmakov\main\Tools.cpp: No such file or directory,
+  (компиляция исходного файла "/Lab_2-Stalmakov/main/Tools.cpp")
+  
+  Создание кода...
