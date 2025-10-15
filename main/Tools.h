@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <iostream>
-#include "Pipe.h"
-#include "Compressor_Station.h"
+#include "pipe.h"
+#include "Compressor_station.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <chrono>

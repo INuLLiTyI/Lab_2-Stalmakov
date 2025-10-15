@@ -7,7 +7,7 @@
 #include <sstream>
 #include <string>
 #include "pipe.h"
-#include "Compressor_Station.h"
+#include "Compressor_station.h"
 #include "Tools.h"
 
 using namespace std;

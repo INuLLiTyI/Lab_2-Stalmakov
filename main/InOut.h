@@ -1,6 +1,6 @@
 #pragma once
-#include "Pipe.h"
-#include "Compressor_Station.h"
+#include "pipe.h"
+#include "Compressor_station.h"
 #include <unordered_map>
 #include <sstream> 
 #include <vector>
