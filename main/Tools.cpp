@@ -7,6 +7,9 @@
 #include <string>
 #include <limits>
 
+// Инициализация глобального логгера
+Logger logger;
+
 void fix() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -46,6 +49,7 @@ void edit(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int> res) {
             Pipemap.at(id).changeofstate();
             foundAny = true;
             std::cout << "State of pipe with ID " << id << " changed." << std::endl;
+            logger.log("Changed state of pipe ID: " + std::to_string(id));
         }
         else {
             std::cout << "ID " << id << " not found in filtered set." << std::endl;
