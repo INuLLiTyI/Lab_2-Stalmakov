@@ -45,6 +45,7 @@ void DeleteObjectById(std::unordered_map<int, T>& objects, std::unordered_set<in
         if (it != objects.end()) {
             objects.erase(it);
             std::cout << "Object with ID " << id << " successfully deleted.\n";
+            logger.log("Deleted object ID: " + std::to_string(id));
         }
     }
 }
