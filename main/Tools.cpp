@@ -7,7 +7,7 @@
 #include <string>
 #include <limits>
 
-// Инициализация глобального логгера
+// Init of global logger
 Logger logger;
 
 void fix() {

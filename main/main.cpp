@@ -22,12 +22,6 @@ void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, 
 void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations);
 void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations);
 
-// Вспомогательные функции для поиска
-template<typename T>
-unordered_set<int> findPipesByFilter(const unordered_map<int, Pipe>& pipes, bool(*filter)(const Pipe&, T), T param);
-template<typename T>
-unordered_set<int> findStationsByFilter(const unordered_map<int, CompressorStation>& stations, bool(*filter)(const CompressorStation&, T), T param);
-
 void printMenu() {
     cout << "\n=== Pipeline Management System ===\n";
     cout << "1. Add Pipe\n";
@@ -74,11 +68,12 @@ void addPipe(unordered_map<int, Pipe>& pipes) {
     newPipe.SetDiameter(diameter);
     newPipe.SetInRepair(false);
 
-    // Генерация ID (можно улучшить)
+    // Генерация ID
     static int nextPipeId = 1;
     pipes[nextPipeId] = newPipe;
 
     cout << "Pipe added successfully! ID: " << nextPipeId << "\n";
+    logger.log("Added pipe ID: " + to_string(nextPipeId) + ", Name: " + name);
     nextPipeId++;
 }
 
@@ -120,6 +115,7 @@ void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
     stations[nextStationId] = newStation;
 
     cout << "Compressor Station added successfully! ID: " << nextStationId << "\n";
+    logger.log("Added compressor station ID: " + to_string(nextStationId) + ", Name: " + name);
     nextStationId++;
 }
 
@@ -147,6 +143,7 @@ void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<i
             station.Print();
         }
     }
+    logger.log("Viewed all objects");
 }
 
 void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
@@ -170,9 +167,11 @@ void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, 
         }
 
         cout << "Data saved successfully to " << filename << "!\n";
+        logger.log("Saved data to file: " + filename);
     }
     else {
         cout << "Error saving data to " << filename << "!\n";
+        logger.log("Error saving to file: " + filename);
     }
 }
 
@@ -194,9 +193,7 @@ void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, Compressor
         for (int i = 0; i < pipeCount; i++) {
             Pipe pipe;
             in >> pipe;
-            // Здесь нужно получить ID из pipe или генерировать новый
-            static int nextId = 1;
-            pipes[nextId++] = pipe;
+            pipes[pipe.GetId()] = pipe; // Сохраняем с оригинальным ID
         }
 
         // Загружаем станции
@@ -204,14 +201,15 @@ void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, Compressor
         for (int i = 0; i < stationCount; i++) {
             CompressorStation station;
             in >> station;
-            static int nextId = 1;
-            stations[nextId++] = station;
+            stations[station.GetId()] = station; // Сохраняем с оригинальным ID
         }
 
         cout << "Data loaded successfully from " << filename << "!\n";
+        logger.log("Loaded data from file: " + filename);
     }
     else {
         cout << "File " << filename << " not found!\n";
+        logger.log("File not found: " + filename);
     }
 }
 
@@ -238,13 +236,87 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         clearInput();
         getline(cin, name);
 
-        // Здесь должна быть реализация поиска по имени
-        // и дальнейшее редактирование/удаление
+        auto foundPipes = FindPipeFilter(pipes, checknamepipe, name);
+        if (!foundPipes.empty()) {
+            cout << "Found " << foundPipes.size() << " pipes\n";
+            ChangePipe(pipes, foundPipes);
+            logger.log("Searched pipes by name: " + name + ", found: " + to_string(foundPipes.size()));
+        }
+        else {
+            cout << "No pipes found with name: " << name << endl;
+            logger.log("Searched pipes by name: " + name + ", found: 0");
+        }
         break;
     }
-          // Аналогично для других случаев поиска
+    case 2: {
+        if (pipes.empty()) {
+            cout << "No pipes available.\n";
+            break;
+        }
+        cout << "Search pipes by repair status (0 - working, 1 - in repair): ";
+        bool status;
+        cin >> status;
+
+        auto foundPipes = FindPipeFilter(pipes, checkstate, status);
+        if (!foundPipes.empty()) {
+            cout << "Found " << foundPipes.size() << " pipes\n";
+            ChangePipe(pipes, foundPipes);
+            logger.log("Searched pipes by status: " + to_string(status) + ", found: " + to_string(foundPipes.size()));
+        }
+        else {
+            cout << "No pipes found with specified status\n";
+            logger.log("Searched pipes by status: " + to_string(status) + ", found: 0");
+        }
+        break;
+    }
+    case 3: {
+        if (stations.empty()) {
+            cout << "No compressor stations available.\n";
+            break;
+        }
+        string name;
+        cout << "Enter station name to search: ";
+        clearInput();
+        getline(cin, name);
+
+        auto foundStations = FindKSFilter(stations, checknameks, name);
+        if (!foundStations.empty()) {
+            cout << "Found " << foundStations.size() << " stations\n";
+            ChangeKS(stations, foundStations);
+            logger.log("Searched stations by name: " + name + ", found: " + to_string(foundStations.size()));
+        }
+        else {
+            cout << "No stations found with name: " << name << endl;
+            logger.log("Searched stations by name: " + name + ", found: 0");
+        }
+        break;
+    }
+    case 4: {
+        if (stations.empty()) {
+            cout << "No compressor stations available.\n";
+            break;
+        }
+        cout << "Enter minimum number of workshops: ";
+        int minWorkshops;
+        cin >> minWorkshops;
+
+        auto foundStations = FindKSFilter(stations, workshops, minWorkshops);
+        if (!foundStations.empty()) {
+            cout << "Found " << foundStations.size() << " stations\n";
+            ChangeKS(stations, foundStations);
+            logger.log("Searched stations by workshops >= " + to_string(minWorkshops) + ", found: " + to_string(foundStations.size()));
+        }
+        else {
+            cout << "No stations found with " << minWorkshops << " or more workshops\n";
+            logger.log("Searched stations by workshops >= " + to_string(minWorkshops) + ", found: 0");
+        }
+        break;
+    }
+    case 0:
+        return;
     default:
         cout << "Invalid choice!\n";
+        logger.log("Invalid search choice: " + to_string(choice));
     }
 }
 
@@ -283,9 +355,11 @@ int main() {
             break;
         case 0:
             cout << "Exiting program.\n";
+            logger.log("Application exited by user");
             return 0;
         default:
             cout << "Invalid choice! Please try again.\n";
+            logger.log("Invalid menu choice: " + to_string(choice));
             break;
         }
     }
