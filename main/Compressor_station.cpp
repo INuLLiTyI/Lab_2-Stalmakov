@@ -7,9 +7,8 @@
 // Инициализация статической переменной
 int CompressorStation::maxId = 0;
 
-CompressorStation::CompressorStation()
-    : id(++maxId), name(""), workshops(0), workshopsInWork(0), efficiency(0) {
-}
+CompressorStation::CompressorStation() 
+    : id(++maxId), name(""), workshops(0), workshopsInWork(0), efficiency(0) {}
 
 // Getters
 int CompressorStation::GetId() const {
@@ -81,7 +80,7 @@ void CompressorStation::Print() const {
     std::cout << std::format("  Total workshops: {}\n", workshops);
     std::cout << std::format("  Workshops in work: {}\n", workshopsInWork);
     std::cout << std::format("  Efficiency: {}\n", efficiency);
-
+    
     if (workshops > 0) {
         double percentage = (static_cast<double>(workshopsInWork) / workshops) * 100;
         std::cout << std::format("  Percentage of workshops in work: {:.2f}%\n", percentage);
@@ -99,16 +98,16 @@ std::ostream& operator<<(std::ostream& out, const CompressorStation& cs) {
 std::istream& operator>>(std::istream& in, CompressorStation& cs) {
     std::cout << "Enter compressor station name: ";
     std::getline(in, cs.name);
-
+    
     std::cout << "Enter total number of workshops: ";
     in >> cs.workshops;
-
+    
     std::cout << "Enter number of workshops in work: ";
     in >> cs.workshopsInWork;
-
+    
     std::cout << "Enter efficiency: ";
     in >> cs.efficiency;
-
+    
     in.ignore(); // очистка буфера
     return in;
 }
