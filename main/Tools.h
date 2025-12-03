@@ -12,7 +12,6 @@
                         std::cerr << str << std::endl
 void fix();
 
-// Logger for writing user inputes
 class Logger {
 private:
     std::ofstream logFile;
@@ -27,7 +26,7 @@ public:
         auto time = std::chrono::system_clock::to_time_t(now);
         char timeStr[100];
         ctime_s(timeStr, sizeof(timeStr), &time);
-        timeStr[24] = '\0'; // удаляем перевод строки
+        timeStr[24] = '\0';
         logFile << timeStr << " - " << action << std::endl;
     }
 
@@ -77,7 +76,8 @@ std::unordered_set<int> FindPipeFilter(const std::unordered_map<int, Pipe>& Pipe
     {
         if (f(p.second, param)) {
             res.emplace(p.first);
-            std::cout << p.second;
+            std::cout << "ID: " << p.first << " - ";
+            p.second.Print();
         }
     }
     return res;
@@ -94,7 +94,8 @@ std::unordered_set<int> FindKSFilter(const std::unordered_map<int, CompressorSta
     {
         if (f(g.second, param)) {
             res.emplace(g.first);
-            std::cout << g.second;
+            std::cout << "ID: " << g.first << " - ";
+            g.second.Print();
         }
     }
     return res;

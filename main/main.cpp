@@ -13,7 +13,6 @@
 
 using namespace std;
 
-// Объявления функций
 void printMenu();
 void clearInput();
 void addPipe(unordered_map<int, Pipe>& pipes);
@@ -51,26 +50,49 @@ void addPipe(unordered_map<int, Pipe>& pipes) {
     clearInput();
     getline(cin, name);
 
-    cout << "Enter length (km): ";
-    while (!(cin >> length) || length <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        clearInput();
+    while (true) {
+        cout << "Enter length (km): ";
+        string input;
+        getline(cin, input);
+
+        try {
+            length = stof(input);
+            if (length <= 0) {
+                cout << "Error! Enter positive number!\n";
+                continue;
+            }
+            break;
+        }
+        catch (...) {
+            cout << "Error! Enter positive number!\n";
+        }
     }
 
-    cout << "Enter diameter (mm): ";
-    while (!(cin >> diameter) || diameter <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        clearInput();
+    while (true) {
+        cout << "Enter diameter (mm): ";
+        string input;
+        getline(cin, input);
+
+        try {
+            diameter = stoi(input);
+            if (diameter <= 0) {
+                cout << "Error! Enter positive number!\n";
+                continue;
+            }
+            break;
+        }
+        catch (...) {
+            cout << "Error! Enter positive number!\n";
+        }
     }
 
-    // Генерация ID
-    int newId = Pipe::GetMaxId() + 1;
     Pipe newPipe;
     newPipe.SetName(name);
     newPipe.SetLength(length);
     newPipe.SetDiameter(diameter);
     newPipe.SetInRepair(false);
 
+    int newId = newPipe.GetId();
     pipes[newId] = newPipe;
 
     cout << "Pipe added successfully! ID: " << newId << "\n";
@@ -87,31 +109,66 @@ void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
     clearInput();
     getline(cin, name);
 
-    cout << "Enter total number of workshops: ";
-    while (!(cin >> totalWorkshops) || totalWorkshops <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        clearInput();
+    while (true) {
+        cout << "Enter total number of workshops: ";
+        string input;
+        getline(cin, input);
+
+        try {
+            totalWorkshops = stoi(input);
+            if (totalWorkshops <= 0) {
+                cout << "Error! Enter positive number!\n";
+                continue;
+            }
+            break;
+        }
+        catch (...) {
+            cout << "Error! Enter positive number!\n";
+        }
     }
 
-    cout << "Enter number of working workshops: ";
-    while (!(cin >> workingWorkshops) || workingWorkshops < 0 || workingWorkshops > totalWorkshops) {
-        cout << "Invalid input! Enter number between 0 and " << totalWorkshops << ": ";
-        clearInput();
+    while (true) {
+        cout << "Enter number of working workshops: ";
+        string input;
+        getline(cin, input);
+
+        try {
+            workingWorkshops = stoi(input);
+            if (workingWorkshops < 0 || workingWorkshops > totalWorkshops) {
+                cout << "Error! Enter number between 0 and " << totalWorkshops << "!\n";
+                continue;
+            }
+            break;
+        }
+        catch (...) {
+            cout << "Error! Enter a valid number!\n";
+        }
     }
 
-    cout << "Enter efficiency level: ";
-    while (!(cin >> efficiency) || efficiency <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        clearInput();
+    while (true) {
+        cout << "Enter efficiency level: ";
+        string input;
+        getline(cin, input);
+
+        try {
+            efficiency = stoi(input);
+            if (efficiency <= 0) {
+                cout << "Error! Enter positive number!\n";
+                continue;
+            }
+            break;
+        }
+        catch (...) {
+            cout << "Error! Enter positive number!\n";
+        }
     }
 
-    // Генерация ID
-    int newId = CompressorStation::GetMaxId() + 1;
     CompressorStation newStation;
     newStation.SetName(name);
     newStation.SetWorkshops(totalWorkshops, workingWorkshops);
     newStation.SetEfficiency(efficiency);
 
+    int newId = newStation.GetId();
     stations[newId] = newStation;
 
     cout << "Compressor Station added successfully! ID: " << newId << "\n";
@@ -121,24 +178,24 @@ void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
 void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
     cout << "\n=== All Objects ===\n";
 
-    if (pipes.empty()) {
-        cout << "No pipes available.\n";
+    if (pipes.empty() && stations.empty()) {
+        cout << "No objects available.\n";
+        logger.log("Viewed all objects - none available");
+        return;
     }
-    else {
+
+    if (!pipes.empty()) {
         cout << "--- Pipes (" << pipes.size() << ") ---\n";
         for (const auto& [id, pipe] : pipes) {
-            cout << "ID: " << id << " - ";
+            cout << "\nPipe ID: " << id << "\n";
             pipe.Print();
         }
     }
 
-    if (stations.empty()) {
-        cout << "No compressor stations available.\n";
-    }
-    else {
+    if (!stations.empty()) {
         cout << "\n--- Compressor Stations (" << stations.size() << ") ---\n";
         for (const auto& [id, station] : stations) {
-            cout << "ID: " << id << " - ";
+            cout << "\nCompressor Station ID: " << id << "\n";
             station.Print();
         }
     }
@@ -153,13 +210,11 @@ void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, 
 
     ofstream out(filename);
     if (out) {
-        // Сохраняем количество труб
         out << pipes.size() << endl;
         for (const auto& [id, pipe] : pipes) {
             out << pipe << endl;
         }
 
-        // Сохраняем количество станций
         out << stations.size() << endl;
         for (const auto& [id, station] : stations) {
             out << station << endl;
@@ -187,20 +242,18 @@ void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, Compressor
 
         int pipeCount, stationCount;
 
-        // Загружаем трубы
         in >> pipeCount;
         for (int i = 0; i < pipeCount; i++) {
             Pipe pipe;
             in >> pipe;
-            pipes[pipe.GetId()] = pipe; // Сохраняем с оригинальным ID
+            pipes[pipe.GetId()] = pipe;
         }
 
-        // Загружаем станции
         in >> stationCount;
         for (int i = 0; i < stationCount; i++) {
             CompressorStation station;
             in >> station;
-            stations[station.GetId()] = station; // Сохраняем с оригинальным ID
+            stations[station.GetId()] = station;
         }
 
         cout << "Data loaded successfully from " << filename << "!\n";

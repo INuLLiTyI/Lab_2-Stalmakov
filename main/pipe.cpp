@@ -10,12 +10,11 @@ int Pipe::maxId = 0;
 
 Pipe::Pipe()
 {
-    id = 0;
+    id = ++maxId;
     name = "None";
     length = 0.0f;
     diameter = 0;
     inRepair = false;
-    connectedStationId = 0;
 }
 
 int Pipe::GetId() const { return id; }
@@ -24,23 +23,11 @@ string Pipe::GetName() const { return name; }
 bool Pipe::GetState() const { return inRepair; }
 float Pipe::GetLength() const { return length; }
 int Pipe::GetDiameter() const { return diameter; }
-bool Pipe::IsConnected() const { return connectedStationId != 0; }
-int Pipe::GetConnectedStationId() const { return connectedStationId; }
 
 void Pipe::SetName(const string& newName) { name = newName; }
 void Pipe::SetLength(float newLength) { length = newLength; }
 void Pipe::SetDiameter(int newDiameter) { diameter = newDiameter; }
 void Pipe::SetInRepair(bool repairStatus) { inRepair = repairStatus; }
-
-void Pipe::ConnectToStation(int stationId) {
-    connectedStationId = stationId;
-    inRepair = false;
-}
-
-void Pipe::Disconnect() {
-    connectedStationId = 0;
-    inRepair = true;
-}
 
 void Pipe::changeofstate() {
     inRepair = !inRepair;
@@ -62,13 +49,11 @@ void Pipe::Edit() {
 }
 
 void Pipe::Print() const {
-    cout << "Pipe ID: " << id << endl;
     cout << "Name: " << name << endl;
     cout << fixed << setprecision(2);
     cout << "Length: " << length << " km" << endl;
     cout << "Diameter: " << diameter << " mm" << endl;
     cout << "Status: " << (inRepair ? "In repair" : "Operational") << endl;
-    cout << "Connected: " << (IsConnected() ? "True" : "False") << endl;
 }
 
 ostream& operator<<(ostream& out, const Pipe& pipe) {
@@ -78,7 +63,6 @@ ostream& operator<<(ostream& out, const Pipe& pipe) {
     out << pipe.length << endl;
     out << pipe.diameter << endl;
     out << pipe.inRepair << endl;
-    out << pipe.connectedStationId << endl;
     return out;
 }
 
@@ -86,23 +70,17 @@ istream& operator>>(istream& in, Pipe& pipe) {
     in >> pipe.id;
     in.ignore();
     getline(in, pipe.name);
-    in >> pipe.length >> pipe.diameter >> pipe.inRepair >> pipe.connectedStationId;
+    in >> pipe.length >> pipe.diameter >> pipe.inRepair;
     return in;
 }
 
 ifstream& operator>>(ifstream& fin, Pipe& p) {
     fin >> p.id;
-    fin >> std::ws;
+    fin.ignore();
     getline(fin, p.name);
     fin >> p.length;
     fin >> p.diameter;
     fin >> p.inRepair;
-    fin >> p.connectedStationId;
-
-    // ОБНОВЛЯЕМ maxId при загрузке
-    if (p.id > Pipe::maxId) {
-        Pipe::maxId = p.id;
-    }
     return fin;
 }
 
@@ -111,7 +89,6 @@ ofstream& operator<<(ofstream& fout, const Pipe& p) {
         << p.name << endl
         << p.length << endl
         << p.diameter << endl
-        << p.inRepair << endl
-        << p.connectedStationId << endl;
+        << p.inRepair << endl;
     return fout;
 }

@@ -5,14 +5,12 @@
 #include <format>
 using namespace std;
 
-// Инициализация статической переменной
 int CompressorStation::maxId = 0;
 
 CompressorStation::CompressorStation()
-    : id(0), name(""), workshops(0), workshopsInWork(0), efficiency(0) {
-} // id = 0 вместо ++maxId
+    : id(++maxId), name(""), workshops(0), workshopsInWork(0), efficiency(0) {
+}
 
-// Getters
 int CompressorStation::GetId() const {
     return id;
 }
@@ -38,7 +36,6 @@ int CompressorStation::GetPercent() const {
     return (workshopsInWork * 100) / workshops;
 }
 
-// Setters
 void CompressorStation::SetName(const std::string& newName) {
     name = newName;
 }
@@ -55,7 +52,6 @@ void CompressorStation::SetEfficiency(int newEfficiency) {
     efficiency = newEfficiency;
 }
 
-// Workshop management
 void CompressorStation::StartWorkshop() {
     if (workshopsInWork < workshops) {
         workshopsInWork++;
@@ -78,7 +74,7 @@ bool CompressorStation::UpdateWorkshopsInUse(int change) {
 }
 
 void CompressorStation::Print() const {
-    cout << format("Compressor Station [ID: {}]: {}\n", id, name);
+    cout << format("Name: {}\n", name);
     cout << format("  Total workshops: {}\n", workshops);
     cout << format("  Workshops in work: {}\n", workshopsInWork);
     cout << format("  Efficiency: {}\n", efficiency);
@@ -89,7 +85,6 @@ void CompressorStation::Print() const {
     }
 }
 
-// Friend functions for I/O
 ostream& operator<<(ostream& out, const CompressorStation& cs) {
     out << "Compressor Station [ID: " << cs.id << "]: " << cs.name << "\n";
     out << "  Workshops: " << cs.workshopsInWork << "/" << cs.workshops << " in use\n";
@@ -110,22 +105,17 @@ istream& operator>>(istream& in, CompressorStation& cs) {
     cout << "Enter efficiency: ";
     in >> cs.efficiency;
 
-    in.ignore(); // очистка буфера
+    in.ignore();
     return in;
 }
 
 ifstream& operator>>(ifstream& fin, CompressorStation& cs) {
     fin >> cs.id;
     fin.ignore();
-    std::getline(fin, cs.name);
+    getline(fin, cs.name);
     fin >> cs.workshops;
     fin >> cs.workshopsInWork;
     fin >> cs.efficiency;
-
-    // Обновляем maxId при загрузке
-    if (cs.id > CompressorStation::maxId) {
-        CompressorStation::maxId = cs.id;
-    }
     return fin;
 }
 

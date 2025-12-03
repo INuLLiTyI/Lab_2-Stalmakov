@@ -11,3 +11,57 @@ Wed Oct 15 15:54:29 2025 - Searched pipes by name: Pipe 1, found: 0
 Wed Oct 15 15:54:36 2025 - Viewed all objects
 Wed Oct 15 15:54:56 2025 - Added pipe ID: 1, Name: Pipe 1
 Wed Oct 15 15:54:59 2025 - Viewed all objects
+Tue Oct 28 18:35:43 2025 - === Application started ===
+Tue Oct 28 18:35:59 2025 - Added pipe ID: 1, Name: Truba 1
+Tue Oct 28 18:36:07 2025 - Added pipe ID: 1, Name: Truba 2
+Tue Oct 28 18:36:20 2025 - Added compressor station ID: 1, Name: KS !
+Tue Oct 28 18:36:23 2025 - Viewed all objects
+Wed Dec  3 15:01:21 2025 - === Application started ===
+Wed Dec  3 15:01:35 2025 - Added pipe ID: 1, Name: pipe 1
+Wed Dec  3 15:01:49 2025 - Added pipe ID: 1, Name: pip 2
+Wed Dec  3 15:01:54 2025 - Viewed all objects
+Wed Dec  3 15:21:27 2025 - === Application started ===
+Wed Dec  3 15:21:37 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 15:21:40 2025 - Viewed all objects
+Wed Dec  3 15:21:52 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 15:21:57 2025 - Viewed all objects
+Wed Dec  3 15:30:09 2025 - === Application started ===
+Wed Dec  3 15:37:18 2025 - === Application started ===
+Wed Dec  3 15:37:24 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 15:37:31 2025 - Added pipe ID: 1, Name: pip 2
+Wed Dec  3 15:37:45 2025 - Added compressor station ID: 1, Name: CS 1
+Wed Dec  3 15:37:47 2025 - Viewed all objects
+Wed Dec  3 15:46:29 2025 - === Application started ===
+Wed Dec  3 15:46:37 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 15:46:44 2025 - Added pipe ID: 3, Name: pip 2
+Wed Dec  3 15:46:51 2025 - Added compressor station ID: 1, Name: CS 1
+Wed Dec  3 15:47:03 2025 - === Application started ===
+Wed Dec  3 15:47:09 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 15:47:18 2025 - Added pipe ID: 3, Name: pip 2
+Wed Dec  3 15:47:30 2025 - Added pipe ID: 5, Name: pip 3
+Wed Dec  3 15:47:40 2025 - Added compressor station ID: 1, Name: CS 1
+Wed Dec  3 15:47:43 2025 - Viewed all objects
+Wed Dec  3 15:50:51 2025 - === Application started ===
+Wed Dec  3 15:50:57 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 15:51:03 2025 - Added pipe ID: 3, Name: pip 2
+Wed Dec  3 15:51:17 2025 - Added compressor station ID: 1, Name: CS 2
+Wed Dec  3 15:51:20 2025 - Viewed all objects
+Wed Dec  3 16:01:42 2025 - === Application started ===
+Wed Dec  3 16:01:49 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 16:01:55 2025 - Added pipe ID: 3, Name: pip 2
+Wed Dec  3 16:02:03 2025 - Added compressor station ID: 1, Name: CS 1
+Wed Dec  3 16:02:04 2025 - Viewed all objects
+Wed Dec  3 16:17:19 2025 - === Application started ===
+Wed Dec  3 16:17:31 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 16:17:40 2025 - Added pipe ID: 3, Name: pip 2
+Wed Dec  3 16:17:46 2025 - Added compressor station ID: 1, Name: CS 1
+Wed Dec  3 16:17:48 2025 - Viewed all objects
+Wed Dec  3 16:18:22 2025 - Searched pipes by name: pip 2, found: 1
+Wed Dec  3 16:26:30 2025 - === Application started ===
+Wed Dec  3 16:26:39 2025 - Added pipe ID: 1, Name: pip 1
+Wed Dec  3 16:26:40 2025 - Viewed all objects
+Wed Dec  3 16:27:04 2025 - Searched pipes by name: pip 1, found: 1
+Wed Dec  3 16:27:18 2025 - Viewed all objects
+Wed Dec  3 16:30:32 2025 - Searched pipes by status: 0, found: 0
+Wed Dec  3 16:30:37 2025 - Application exited by user
+Wed Dec  3 16:30:37 2025 - === Application closed ===
