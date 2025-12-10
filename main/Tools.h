@@ -9,6 +9,7 @@
 #include <fstream>
 
 #define INPUT_LINE(in, str) getline(in>>std::ws, str); \
+                        logger.log(str); \
                         std::cerr << str << std::endl
 void fix();
 
@@ -113,6 +114,7 @@ T GetCorrectNumber(T min, T max)
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Enter a correct value: ";
     }
+    logger.log(std::to_string(x));
     std::cerr << x << std::endl;
     return x;
 }

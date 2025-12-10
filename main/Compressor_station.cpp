@@ -3,12 +3,25 @@
 #include <string>
 #include <fstream>
 #include <format>
+#include "Tools.h"
 using namespace std;
 
 int CompressorStation::maxId = 0;
 
-CompressorStation::CompressorStation()
-    : id(++maxId), name(""), workshops(0), workshopsInWork(0), efficiency(0) {
+CompressorStation::CompressorStation() {
+    id = ++maxId;
+    name = "";
+    workshops = 0;
+    workshopsInWork = 0;
+    efficiency = 0;
+}
+
+CompressorStation::CompressorStation(const string& name, int workshops, int workshopsInWork, int efficiency) {
+    id = ++maxId;
+    this->name = name;
+    this->workshops = workshops;
+    this->workshopsInWork = workshopsInWork;
+    this->efficiency = efficiency;
 }
 
 int CompressorStation::GetId() const {
@@ -19,7 +32,11 @@ int CompressorStation::GetMaxId() {
     return maxId;
 }
 
-std::string CompressorStation::GetName() const {
+void CompressorStation::SetMaxId(int newMaxId) {
+    maxId = newMaxId;
+}
+
+string CompressorStation::GetName() const {
     return name;
 }
 
@@ -34,22 +51,6 @@ int CompressorStation::GetWorkshopsInUse() const {
 int CompressorStation::GetPercent() const {
     if (workshops == 0) return 0;
     return (workshopsInWork * 100) / workshops;
-}
-
-void CompressorStation::SetName(const std::string& newName) {
-    name = newName;
-}
-
-void CompressorStation::SetWorkshops(int total, int working) {
-    workshops = total;
-    workshopsInWork = working;
-    if (workshopsInWork > workshops) {
-        workshopsInWork = workshops;
-    }
-}
-
-void CompressorStation::SetEfficiency(int newEfficiency) {
-    efficiency = newEfficiency;
 }
 
 void CompressorStation::StartWorkshop() {
@@ -93,29 +94,52 @@ ostream& operator<<(ostream& out, const CompressorStation& cs) {
 }
 
 istream& operator>>(istream& in, CompressorStation& cs) {
+    string name;
+    int workshops, workshopsInWork, efficiency;
+
     cout << "Enter compressor station name: ";
-    getline(in, cs.name);
+    getline(in >> ws, name);
 
     cout << "Enter total number of workshops: ";
-    in >> cs.workshops;
+    while (!(in >> workshops) || workshops <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        in.clear();
+        in.ignore(10000, '\n');
+    }
 
     cout << "Enter number of workshops in work: ";
-    in >> cs.workshopsInWork;
+    while (!(in >> workshopsInWork) || workshopsInWork < 0 || workshopsInWork > workshops) {
+        cout << "Invalid input! Enter number between 0 and " << workshops << ": ";
+        in.clear();
+        in.ignore(10000, '\n');
+    }
 
     cout << "Enter efficiency: ";
-    in >> cs.efficiency;
+    while (!(in >> efficiency) || efficiency <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        in.clear();
+        in.ignore(10000, '\n');
+    }
 
-    in.ignore();
+    cs = CompressorStation(name, workshops, workshopsInWork, efficiency);
     return in;
 }
 
 ifstream& operator>>(ifstream& fin, CompressorStation& cs) {
-    fin >> cs.id;
-    fin.ignore();
-    getline(fin, cs.name);
-    fin >> cs.workshops;
-    fin >> cs.workshopsInWork;
-    fin >> cs.efficiency;
+    int id;
+    string name;
+    int workshops, workshopsInWork, efficiency;
+
+    fin >> id;
+    getline(fin >> ws, name);
+    fin >> workshops;
+    fin >> workshopsInWork;
+    fin >> efficiency;
+
+    cs = CompressorStation(name, workshops, workshopsInWork, efficiency);
+    const_cast<int&>(cs.id) = id;
+    CompressorStation::maxId = max(CompressorStation::maxId, id);
+
     return fin;
 }
 

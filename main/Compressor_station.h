@@ -15,17 +15,19 @@ private:
 
 public:
     CompressorStation();
+    CompressorStation(const std::string& name, int workshops, int workshopsInWork, int efficiency);
 
     int GetId() const;
     static int GetMaxId();
+    static void SetMaxId(int newMaxId);
     std::string GetName() const;
     int GetWorkshops() const;
     int GetWorkshopsInUse() const;
     int GetPercent() const;
 
-    void SetName(const std::string& name);
-    void SetWorkshops(int total, int working);
-    void SetEfficiency(int efficiency);
+   // void SetName(const std::string& name);
+   // void SetWorkshops(int total, int working);
+   // void SetEfficiency(int efficiency);
 
     void StartWorkshop();
     void StopWorkshop();

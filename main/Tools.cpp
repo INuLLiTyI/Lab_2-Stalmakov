@@ -7,16 +7,18 @@
 #include <string>
 #include <limits>
 
+using namespace std;
+
 Logger logger;
 
 void fix() {
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-bool checknamepipe(const Pipe& p, const std::string param)
+bool checknamepipe(const Pipe& p, const string param)
 {
-    return p.GetName().find(param) != std::string::npos;
+    return p.GetName().find(param) != string::npos;
 }
 
 bool checkstate(const Pipe& p, bool param)
@@ -24,9 +26,9 @@ bool checkstate(const Pipe& p, bool param)
     return p.GetState() == param;
 }
 
-bool checknameks(const CompressorStation& g, std::string param)
+bool checknameks(const CompressorStation& g, string param)
 {
-    return g.GetName().find(param) != std::string::npos;
+    return g.GetName().find(param) != string::npos;
 }
 
 bool workshops(const CompressorStation& g, int param)
@@ -34,12 +36,13 @@ bool workshops(const CompressorStation& g, int param)
     return g.GetWorkshops() >= param;
 }
 
-void edit(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int> res) {
-    std::string idInput;
-    std::cout << "Enter object IDs to change state (space separated): ";
-    std::getline(std::cin >> std::ws, idInput);
+void edit(unordered_map<int, Pipe>& Pipemap, unordered_set<int> res) {
+    string idInput;
+    cout << "Enter object IDs to change state (space separated): ";
+    getline(cin >> ws, idInput);
+    logger.log(idInput);
 
-    std::istringstream idStream(idInput);
+    istringstream idStream(idInput);
     int id;
     bool foundAny = false;
 
@@ -47,15 +50,14 @@ void edit(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set<int> res) {
         if (res.find(id) != res.end()) {
             Pipemap.at(id).changeofstate();
             foundAny = true;
-            std::cout << "State of pipe with ID " << id << " changed." << std::endl;
-            logger.log("Changed state of pipe ID: " + std::to_string(id));
+            cout << "State of pipe with ID " << id << " changed." << endl;
         }
         else {
-            std::cout << "ID " << id << " not found in filtered set." << std::endl;
+            cout << "ID " << id << " not found in filtered set." << endl;
         }
     }
 
     if (!foundAny) {
-        std::cout << "No IDs found to change state." << std::endl;
+        cout << "No IDs found to change state." << endl;
     }
 }

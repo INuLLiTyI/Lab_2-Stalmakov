@@ -47,132 +47,69 @@ void addPipe(unordered_map<int, Pipe>& pipes) {
     int diameter;
 
     cout << "Enter pipe name: ";
-    clearInput();
-    getline(cin, name);
+    getline(cin >> ws, name);
+    logger.log(name);
 
-    while (true) {
-        cout << "Enter length (km): ";
-        string input;
-        getline(cin, input);
-
-        try {
-            length = stof(input);
-            if (length <= 0) {
-                cout << "Error! Enter positive number!\n";
-                continue;
-            }
-            break;
-        }
-        catch (...) {
-            cout << "Error! Enter positive number!\n";
-        }
+    cout << "Enter length (km): ";
+    while (!(cin >> length) || length <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
     }
+    logger.log(to_string(length));
 
-    while (true) {
-        cout << "Enter diameter (mm): ";
-        string input;
-        getline(cin, input);
-
-        try {
-            diameter = stoi(input);
-            if (diameter <= 0) {
-                cout << "Error! Enter positive number!\n";
-                continue;
-            }
-            break;
-        }
-        catch (...) {
-            cout << "Error! Enter positive number!\n";
-        }
+    cout << "Enter diameter (mm): ";
+    while (!(cin >> diameter) || diameter <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
     }
+    logger.log(to_string(diameter));
 
-    Pipe newPipe;
-    newPipe.SetName(name);
-    newPipe.SetLength(length);
-    newPipe.SetDiameter(diameter);
-    newPipe.SetInRepair(false);
+    Pipe newPipe(name, length, diameter, false);
+    pipes[newPipe.GetId()] = newPipe;
 
-    int newId = newPipe.GetId();
-    pipes[newId] = newPipe;
-
-    cout << "Pipe added successfully! ID: " << newId << "\n";
-    logger.log("Added pipe ID: " + to_string(newId) + ", Name: " + name);
+    cout << "Pipe added successfully! ID: " << newPipe.GetId() << "\n";
 }
 
 void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
     cout << "\n=== Add New Compressor Station ===\n";
 
     string name;
-    int totalWorkshops, workingWorkshops, efficiency;
+    int workshops, workshopsInWork, efficiency;
 
-    cout << "Enter station name: ";
-    clearInput();
-    getline(cin, name);
+    cout << "Enter compressor station name: ";
+    getline(cin >> ws, name);
+    logger.log(name);
 
-    while (true) {
-        cout << "Enter total number of workshops: ";
-        string input;
-        getline(cin, input);
-
-        try {
-            totalWorkshops = stoi(input);
-            if (totalWorkshops <= 0) {
-                cout << "Error! Enter positive number!\n";
-                continue;
-            }
-            break;
-        }
-        catch (...) {
-            cout << "Error! Enter positive number!\n";
-        }
+    cout << "Enter total number of workshops: ";
+    while (!(cin >> workshops) || workshops <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
     }
+    logger.log(to_string(workshops));
 
-    while (true) {
-        cout << "Enter number of working workshops: ";
-        string input;
-        getline(cin, input);
-
-        try {
-            workingWorkshops = stoi(input);
-            if (workingWorkshops < 0 || workingWorkshops > totalWorkshops) {
-                cout << "Error! Enter number between 0 and " << totalWorkshops << "!\n";
-                continue;
-            }
-            break;
-        }
-        catch (...) {
-            cout << "Error! Enter a valid number!\n";
-        }
+    cout << "Enter number of workshops in work: ";
+    while (!(cin >> workshopsInWork) || workshopsInWork < 0 || workshopsInWork > workshops) {
+        cout << "Invalid input! Enter number between 0 and " << workshops << ": ";
+        cin.clear();
+        cin.ignore(10000, '\n');
     }
+    logger.log(to_string(workshopsInWork));
 
-    while (true) {
-        cout << "Enter efficiency level: ";
-        string input;
-        getline(cin, input);
-
-        try {
-            efficiency = stoi(input);
-            if (efficiency <= 0) {
-                cout << "Error! Enter positive number!\n";
-                continue;
-            }
-            break;
-        }
-        catch (...) {
-            cout << "Error! Enter positive number!\n";
-        }
+    cout << "Enter efficiency: ";
+    while (!(cin >> efficiency) || efficiency <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
     }
+    logger.log(to_string(efficiency));
 
-    CompressorStation newStation;
-    newStation.SetName(name);
-    newStation.SetWorkshops(totalWorkshops, workingWorkshops);
-    newStation.SetEfficiency(efficiency);
+    CompressorStation newStation(name, workshops, workshopsInWork, efficiency);
+    stations[newStation.GetId()] = newStation;
 
-    int newId = newStation.GetId();
-    stations[newId] = newStation;
-
-    cout << "Compressor Station added successfully! ID: " << newId << "\n";
-    logger.log("Added compressor station ID: " + to_string(newId) + ", Name: " + name);
+    cout << "Compressor Station added successfully! ID: " << newStation.GetId() << "\n";
 }
 
 void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
@@ -180,7 +117,6 @@ void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<i
 
     if (pipes.empty() && stations.empty()) {
         cout << "No objects available.\n";
-        logger.log("Viewed all objects - none available");
         return;
     }
 
@@ -199,14 +135,13 @@ void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<i
             station.Print();
         }
     }
-    logger.log("Viewed all objects");
 }
 
 void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
     string filename;
     cout << "Enter filename: ";
-    clearInput();
-    getline(cin, filename);
+    getline(cin >> ws, filename);
+    logger.log(filename);
 
     ofstream out(filename);
     if (out) {
@@ -221,19 +156,17 @@ void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, 
         }
 
         cout << "Data saved successfully to " << filename << "!\n";
-        logger.log("Saved data to file: " + filename);
     }
     else {
         cout << "Error saving data to " << filename << "!\n";
-        logger.log("Error saving to file: " + filename);
     }
 }
 
 void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations) {
     string filename;
     cout << "Enter filename: ";
-    clearInput();
-    getline(cin, filename);
+    getline(cin >> ws, filename);
+    logger.log(filename);
 
     ifstream in(filename);
     if (in) {
@@ -257,11 +190,9 @@ void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, Compressor
         }
 
         cout << "Data loaded successfully from " << filename << "!\n";
-        logger.log("Loaded data from file: " + filename);
     }
     else {
         cout << "File " << filename << " not found!\n";
-        logger.log("File not found: " + filename);
     }
 }
 
@@ -285,18 +216,30 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         }
         string name;
         cout << "Enter pipe name to search: ";
-        clearInput();
-        getline(cin, name);
+        getline(cin >> ws, name);
+        logger.log(name);
 
         auto foundPipes = FindPipeFilter(pipes, checknamepipe, name);
         if (!foundPipes.empty()) {
             cout << "Found " << foundPipes.size() << " pipes\n";
-            ChangePipe(pipes, foundPipes);
-            logger.log("Searched pipes by name: " + name + ", found: " + to_string(foundPipes.size()));
+
+            for (int id : foundPipes) {
+                cout << "\nPipe ID " << id << ":\n";
+                pipes.at(id).Print();
+
+                char answer;
+                cout << "Change repair status? (y/n): ";
+                cin >> answer;
+                logger.log(string(1, answer));
+
+                if (answer == 'y' || answer == 'Y') {
+                    pipes.at(id).changeofstate();
+                    cout << "Pipe ID " << id << " status changed.\n";
+                }
+            }
         }
         else {
             cout << "No pipes found with name: " << name << endl;
-            logger.log("Searched pipes by name: " + name + ", found: 0");
         }
         break;
     }
@@ -308,16 +251,29 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         cout << "Search pipes by repair status (0 - working, 1 - in repair): ";
         bool status;
         cin >> status;
+        logger.log(to_string(status));
 
         auto foundPipes = FindPipeFilter(pipes, checkstate, status);
         if (!foundPipes.empty()) {
             cout << "Found " << foundPipes.size() << " pipes\n";
-            ChangePipe(pipes, foundPipes);
-            logger.log("Searched pipes by status: " + to_string(status) + ", found: " + to_string(foundPipes.size()));
+
+            for (int id : foundPipes) {
+                cout << "\nPipe ID " << id << ":\n";
+                pipes.at(id).Print();
+
+                char answer;
+                cout << "Change repair status? (y/n): ";
+                cin >> answer;
+                logger.log(string(1, answer));
+
+                if (answer == 'y' || answer == 'Y') {
+                    pipes.at(id).changeofstate();
+                    cout << "Pipe ID " << id << " status changed.\n";
+                }
+            }
         }
         else {
             cout << "No pipes found with specified status\n";
-            logger.log("Searched pipes by status: " + to_string(status) + ", found: 0");
         }
         break;
     }
@@ -328,18 +284,41 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         }
         string name;
         cout << "Enter station name to search: ";
-        clearInput();
-        getline(cin, name);
+        getline(cin >> ws, name);
+        logger.log(name);
 
         auto foundStations = FindKSFilter(stations, checknameks, name);
         if (!foundStations.empty()) {
             cout << "Found " << foundStations.size() << " stations\n";
-            ChangeKS(stations, foundStations);
-            logger.log("Searched stations by name: " + name + ", found: " + to_string(foundStations.size()));
+
+            for (int id : foundStations) {
+                cout << "\nStation ID " << id << ":\n";
+                stations.at(id).Print();
+
+                char answer;
+                cout << "Change number of working workshops? (y/n): ";
+                cin >> answer;
+                logger.log(string(1, answer));
+
+                if (answer == 'y' || answer == 'Y') {
+                    int change;
+                    cout << "Enter new number of working workshops (current: "
+                        << stations.at(id).GetWorkshopsInUse() << "): ";
+                    cin >> change;
+                    logger.log(to_string(change));
+
+                    if (stations.at(id).UpdateWorkshopsInUse(change - stations.at(id).GetWorkshopsInUse())) {
+                        cout << "Station ID " << id << " workshops updated to " << change << ".\n";
+                    }
+                    else {
+                        cout << "Invalid number! Must be between 0 and "
+                            << stations.at(id).GetWorkshops() << ".\n";
+                    }
+                }
+            }
         }
         else {
             cout << "No stations found with name: " << name << endl;
-            logger.log("Searched stations by name: " + name + ", found: 0");
         }
         break;
     }
@@ -351,16 +330,40 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         cout << "Enter minimum number of workshops: ";
         int minWorkshops;
         cin >> minWorkshops;
+        logger.log(to_string(minWorkshops));
 
         auto foundStations = FindKSFilter(stations, workshops, minWorkshops);
         if (!foundStations.empty()) {
             cout << "Found " << foundStations.size() << " stations\n";
-            ChangeKS(stations, foundStations);
-            logger.log("Searched stations by workshops >= " + to_string(minWorkshops) + ", found: " + to_string(foundStations.size()));
+
+            for (int id : foundStations) {
+                cout << "\nStation ID " << id << ":\n";
+                stations.at(id).Print();
+
+                char answer;
+                cout << "Change number of working workshops? (y/n): ";
+                cin >> answer;
+                logger.log(string(1, answer));
+
+                if (answer == 'y' || answer == 'Y') {
+                    int change;
+                    cout << "Enter new number of working workshops (current: "
+                        << stations.at(id).GetWorkshopsInUse() << "): ";
+                    cin >> change;
+                    logger.log(to_string(change));
+
+                    if (stations.at(id).UpdateWorkshopsInUse(change - stations.at(id).GetWorkshopsInUse())) {
+                        cout << "Station ID " << id << " workshops updated to " << change << ".\n";
+                    }
+                    else {
+                        cout << "Invalid number! Must be between 0 and "
+                            << stations.at(id).GetWorkshops() << ".\n";
+                    }
+                }
+            }
         }
         else {
             cout << "No stations found with " << minWorkshops << " or more workshops\n";
-            logger.log("Searched stations by workshops >= " + to_string(minWorkshops) + ", found: 0");
         }
         break;
     }
@@ -368,7 +371,6 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         return;
     default:
         cout << "Invalid choice!\n";
-        logger.log("Invalid search choice: " + to_string(choice));
     }
 }
 
@@ -385,6 +387,7 @@ int main() {
             cout << "Invalid input! Please enter a number.\n";
             continue;
         }
+        logger.log(to_string(choice));
 
         switch (choice) {
         case 1:
@@ -407,11 +410,9 @@ int main() {
             break;
         case 0:
             cout << "Exiting program.\n";
-            logger.log("Application exited by user");
             return 0;
         default:
             cout << "Invalid choice! Please try again.\n";
-            logger.log("Invalid menu choice: " + to_string(choice));
             break;
         }
     }

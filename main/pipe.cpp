@@ -8,26 +8,29 @@ using namespace std;
 
 int Pipe::maxId = 0;
 
-Pipe::Pipe()
-{
+Pipe::Pipe() {
     id = ++maxId;
-    name = "None";
+    name = "";
     length = 0.0f;
     diameter = 0;
     inRepair = false;
 }
 
+Pipe::Pipe(const string& name, float length, int diameter, bool inRepair) {
+    id = ++maxId;
+    this->name = name;
+    this->length = length;
+    this->diameter = diameter;
+    this->inRepair = inRepair;
+}
+
 int Pipe::GetId() const { return id; }
 int Pipe::GetMaxId() { return maxId; }
+void Pipe::SetMaxId(int newMaxId) { maxId = newMaxId; }
 string Pipe::GetName() const { return name; }
 bool Pipe::GetState() const { return inRepair; }
 float Pipe::GetLength() const { return length; }
 int Pipe::GetDiameter() const { return diameter; }
-
-void Pipe::SetName(const string& newName) { name = newName; }
-void Pipe::SetLength(float newLength) { length = newLength; }
-void Pipe::SetDiameter(int newDiameter) { diameter = newDiameter; }
-void Pipe::SetInRepair(bool repairStatus) { inRepair = repairStatus; }
 
 void Pipe::changeofstate() {
     inRepair = !inRepair;
@@ -67,20 +70,48 @@ ostream& operator<<(ostream& out, const Pipe& pipe) {
 }
 
 istream& operator>>(istream& in, Pipe& pipe) {
-    in >> pipe.id;
-    in.ignore();
-    getline(in, pipe.name);
-    in >> pipe.length >> pipe.diameter >> pipe.inRepair;
+    string name;
+    float length;
+    int diameter;
+
+    cout << "Enter pipe name: ";
+    getline(in >> ws, name);
+
+    cout << "Enter length (km): ";
+    while (!(in >> length) || length <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        in.clear();
+        in.ignore(10000, '\n');
+    }
+
+    cout << "Enter diameter (mm): ";
+    while (!(in >> diameter) || diameter <= 0) {
+        cout << "Invalid input! Enter positive number: ";
+        in.clear();
+        in.ignore(10000, '\n');
+    }
+
+    pipe = Pipe(name, length, diameter, false);
     return in;
 }
 
 ifstream& operator>>(ifstream& fin, Pipe& p) {
-    fin >> p.id;
-    fin.ignore();
-    getline(fin, p.name);
-    fin >> p.length;
-    fin >> p.diameter;
-    fin >> p.inRepair;
+    int id;
+    string name;
+    float length;
+    int diameter;
+    bool inRepair;
+
+    fin >> id;
+    getline(fin >> ws, name);
+    fin >> length;
+    fin >> diameter;
+    fin >> inRepair;
+
+    p = Pipe(name, length, diameter, inRepair);
+    const_cast<int&>(p.id) = id;
+    Pipe::maxId = max(Pipe::maxId, id);
+
     return fin;
 }
 
