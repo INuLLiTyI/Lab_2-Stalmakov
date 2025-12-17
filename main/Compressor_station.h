@@ -25,10 +25,6 @@ public:
     int GetWorkshopsInUse() const;
     int GetPercent() const;
 
-   // void SetName(const std::string& name);
-   // void SetWorkshops(int total, int working);
-   // void SetEfficiency(int efficiency);
-
     void StartWorkshop();
     void StopWorkshop();
     bool UpdateWorkshopsInUse(int change);

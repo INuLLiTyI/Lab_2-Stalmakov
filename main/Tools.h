@@ -77,8 +77,6 @@ std::unordered_set<int> FindPipeFilter(const std::unordered_map<int, Pipe>& Pipe
     {
         if (f(p.second, param)) {
             res.emplace(p.first);
-            std::cout << "ID: " << p.first << " - ";
-            p.second.Print();
         }
     }
     return res;
@@ -95,8 +93,6 @@ std::unordered_set<int> FindKSFilter(const std::unordered_map<int, CompressorSta
     {
         if (f(g.second, param)) {
             res.emplace(g.first);
-            std::cout << "ID: " << g.first << " - ";
-            g.second.Print();
         }
     }
     return res;

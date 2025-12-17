@@ -25,11 +25,6 @@ public:
     float GetLength() const;
     int GetDiameter() const;
 
-    //void SetName(const std::string& name);
-    //void SetLength(float length);
-    //void SetDiameter(int diameter);
-    //void SetInRepair(bool inRepair);
-
     void changeofstate();
     void Edit();
     void Print() const;

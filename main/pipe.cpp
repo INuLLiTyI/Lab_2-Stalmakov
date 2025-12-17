@@ -9,7 +9,7 @@ using namespace std;
 int Pipe::maxId = 0;
 
 Pipe::Pipe() {
-    id = ++maxId;
+    id = 0;
     name = "";
     length = 0.0f;
     diameter = 0;
@@ -91,7 +91,12 @@ istream& operator>>(istream& in, Pipe& pipe) {
         in.ignore(10000, '\n');
     }
 
-    pipe = Pipe(name, length, diameter, false);
+    pipe.id = ++Pipe::maxId;
+    pipe.name = name;
+    pipe.length = length;
+    pipe.diameter = diameter;
+    pipe.inRepair = false;
+
     return in;
 }
 
@@ -108,8 +113,12 @@ ifstream& operator>>(ifstream& fin, Pipe& p) {
     fin >> diameter;
     fin >> inRepair;
 
-    p = Pipe(name, length, diameter, inRepair);
-    const_cast<int&>(p.id) = id;
+    p.id = id;
+    p.name = name;
+    p.length = length;
+    p.diameter = diameter;
+    p.inRepair = inRepair;
+
     Pipe::maxId = max(Pipe::maxId, id);
 
     return fin;

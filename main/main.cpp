@@ -42,74 +42,25 @@ void clearInput() {
 void addPipe(unordered_map<int, Pipe>& pipes) {
     cout << "\n=== Add New Pipe ===\n";
 
-    string name;
-    float length;
-    int diameter;
+    Pipe newPipe;
+    cin >> newPipe;
 
-    cout << "Enter pipe name: ";
-    getline(cin >> ws, name);
-    logger.log(name);
+    int newId = newPipe.GetId();
+    pipes[newId] = newPipe;
 
-    cout << "Enter length (km): ";
-    while (!(cin >> length) || length <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-    }
-    logger.log(to_string(length));
-
-    cout << "Enter diameter (mm): ";
-    while (!(cin >> diameter) || diameter <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-    }
-    logger.log(to_string(diameter));
-
-    Pipe newPipe(name, length, diameter, false);
-    pipes[newPipe.GetId()] = newPipe;
-
-    cout << "Pipe added successfully! ID: " << newPipe.GetId() << "\n";
+    cout << "Pipe added successfully! ID: " << newId << "\n";
 }
 
 void addCompressorStation(unordered_map<int, CompressorStation>& stations) {
     cout << "\n=== Add New Compressor Station ===\n";
 
-    string name;
-    int workshops, workshopsInWork, efficiency;
+    CompressorStation newStation;
+    cin >> newStation;
 
-    cout << "Enter compressor station name: ";
-    getline(cin >> ws, name);
-    logger.log(name);
+    int newId = newStation.GetId();
+    stations[newId] = newStation;
 
-    cout << "Enter total number of workshops: ";
-    while (!(cin >> workshops) || workshops <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-    }
-    logger.log(to_string(workshops));
-
-    cout << "Enter number of workshops in work: ";
-    while (!(cin >> workshopsInWork) || workshopsInWork < 0 || workshopsInWork > workshops) {
-        cout << "Invalid input! Enter number between 0 and " << workshops << ": ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-    }
-    logger.log(to_string(workshopsInWork));
-
-    cout << "Enter efficiency: ";
-    while (!(cin >> efficiency) || efficiency <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-    }
-    logger.log(to_string(efficiency));
-
-    CompressorStation newStation(name, workshops, workshopsInWork, efficiency);
-    stations[newStation.GetId()] = newStation;
-
-    cout << "Compressor Station added successfully! ID: " << newStation.GetId() << "\n";
+    cout << "Compressor Station added successfully! ID: " << newId << "\n";
 }
 
 void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
@@ -203,6 +154,8 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
     cout << "2. Search Pipes by Repair Status\n";
     cout << "3. Search Stations by Name\n";
     cout << "4. Search Stations by Workshop Count\n";
+    cout << "5. Delete Pipes\n";
+    cout << "6. Delete Stations\n";
     cout << "0. Back to Main Menu\n";
     cout << "Choose option: ";
 
@@ -365,6 +318,74 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         else {
             cout << "No stations found with " << minWorkshops << " or more workshops\n";
         }
+        break;
+    }
+    case 5: {
+        if (pipes.empty()) {
+            cout << "No pipes available.\n";
+            break;
+        }
+        cout << "All pipes:\n";
+        for (const auto& [id, pipe] : pipes) {
+            cout << "ID: " << id << " - Name: " << pipe.GetName() << endl;
+        }
+
+        string ids;
+        cout << "Enter pipe IDs to delete (space separated): ";
+        getline(cin >> ws, ids);
+        logger.log("Delete pipes: " + ids);
+
+        istringstream idStream(ids);
+        int id;
+        int deletedCount = 0;
+
+        while (idStream >> id) {
+            auto it = pipes.find(id);
+            if (it != pipes.end()) {
+                pipes.erase(it);
+                cout << "Pipe ID " << id << " deleted.\n";
+                deletedCount++;
+            }
+            else {
+                cout << "Pipe ID " << id << " not found.\n";
+            }
+        }
+
+        cout << "Deleted " << deletedCount << " pipes.\n";
+        break;
+    }
+    case 6: {
+        if (stations.empty()) {
+            cout << "No compressor stations available.\n";
+            break;
+        }
+        cout << "All stations:\n";
+        for (const auto& [id, station] : stations) {
+            cout << "ID: " << id << " - Name: " << station.GetName() << endl;
+        }
+
+        string ids;
+        cout << "Enter station IDs to delete (space separated): ";
+        getline(cin >> ws, ids);
+        logger.log("Delete stations: " + ids);
+
+        istringstream idStream(ids);
+        int id;
+        int deletedCount = 0;
+
+        while (idStream >> id) {
+            auto it = stations.find(id);
+            if (it != stations.end()) {
+                stations.erase(it);
+                cout << "Station ID " << id << " deleted.\n";
+                deletedCount++;
+            }
+            else {
+                cout << "Station ID " << id << " not found.\n";
+            }
+        }
+
+        cout << "Deleted " << deletedCount << " stations.\n";
         break;
     }
     case 0:

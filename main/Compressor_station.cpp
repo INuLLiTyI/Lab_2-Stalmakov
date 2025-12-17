@@ -9,7 +9,7 @@ using namespace std;
 int CompressorStation::maxId = 0;
 
 CompressorStation::CompressorStation() {
-    id = ++maxId;
+    id = 0;
     name = "";
     workshops = 0;
     workshopsInWork = 0;
@@ -121,7 +121,12 @@ istream& operator>>(istream& in, CompressorStation& cs) {
         in.ignore(10000, '\n');
     }
 
-    cs = CompressorStation(name, workshops, workshopsInWork, efficiency);
+    cs.id = ++CompressorStation::maxId;
+    cs.name = name;
+    cs.workshops = workshops;
+    cs.workshopsInWork = workshopsInWork;
+    cs.efficiency = efficiency;
+
     return in;
 }
 
@@ -136,8 +141,12 @@ ifstream& operator>>(ifstream& fin, CompressorStation& cs) {
     fin >> workshopsInWork;
     fin >> efficiency;
 
-    cs = CompressorStation(name, workshops, workshopsInWork, efficiency);
-    const_cast<int&>(cs.id) = id;
+    cs.id = id;
+    cs.name = name;
+    cs.workshops = workshops;
+    cs.workshopsInWork = workshopsInWork;
+    cs.efficiency = efficiency;
+
     CompressorStation::maxId = max(CompressorStation::maxId, id);
 
     return fin;
