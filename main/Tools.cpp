@@ -1,6 +1,5 @@
 #include "Tools.h"
 #include <iostream>
-#include "InOut.h"
 #include <unordered_set>
 #include <unordered_map>
 #include <sstream>
@@ -8,13 +7,6 @@
 #include <limits>
 
 using namespace std;
-
-Logger logger;
-
-void fix() {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
 
 bool checknamepipe(const Pipe& p, const string param)
 {
@@ -39,8 +31,7 @@ bool workshops(const CompressorStation& g, int param)
 void edit(unordered_map<int, Pipe>& Pipemap, unordered_set<int> res) {
     string idInput;
     cout << "Enter object IDs to change state (space separated): ";
-    getline(cin >> ws, idInput);
-    logger.log(idInput);
+    INPUT_LINE(cin, idInput);
 
     istringstream idStream(idInput);
     int id;

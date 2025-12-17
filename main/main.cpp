@@ -6,10 +6,11 @@
 #include <unordered_set>
 #include <sstream>
 #include <string>
+#include <chrono>
+#include <format>
 #include "pipe.h"
 #include "Compressor_station.h"
 #include "Tools.h"
-#include "InOut.h"
 
 using namespace std;
 
@@ -91,8 +92,7 @@ void viewAllObjects(const unordered_map<int, Pipe>& pipes, const unordered_map<i
 void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, CompressorStation>& stations) {
     string filename;
     cout << "Enter filename: ";
-    getline(cin >> ws, filename);
-    logger.log(filename);
+    INPUT_LINE(cin, filename);
 
     ofstream out(filename);
     if (out) {
@@ -116,8 +116,7 @@ void saveToFile(const unordered_map<int, Pipe>& pipes, const unordered_map<int, 
 void loadFromFile(unordered_map<int, Pipe>& pipes, unordered_map<int, CompressorStation>& stations) {
     string filename;
     cout << "Enter filename: ";
-    getline(cin >> ws, filename);
-    logger.log(filename);
+    INPUT_LINE(cin, filename);
 
     ifstream in(filename);
     if (in) {
@@ -160,6 +159,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
     cout << "Choose option: ";
 
     cin >> choice;
+    cerr << choice << endl;
 
     switch (choice) {
     case 1: {
@@ -169,8 +169,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         }
         string name;
         cout << "Enter pipe name to search: ";
-        getline(cin >> ws, name);
-        logger.log(name);
+        INPUT_LINE(cin, name);
 
         auto foundPipes = FindPipeFilter(pipes, checknamepipe, name);
         if (!foundPipes.empty()) {
@@ -183,7 +182,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
                 char answer;
                 cout << "Change repair status? (y/n): ";
                 cin >> answer;
-                logger.log(string(1, answer));
+                cerr << answer << endl;
 
                 if (answer == 'y' || answer == 'Y') {
                     pipes.at(id).changeofstate();
@@ -204,7 +203,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         cout << "Search pipes by repair status (0 - working, 1 - in repair): ";
         bool status;
         cin >> status;
-        logger.log(to_string(status));
+        cerr << status << endl;
 
         auto foundPipes = FindPipeFilter(pipes, checkstate, status);
         if (!foundPipes.empty()) {
@@ -217,7 +216,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
                 char answer;
                 cout << "Change repair status? (y/n): ";
                 cin >> answer;
-                logger.log(string(1, answer));
+                cerr << answer << endl;
 
                 if (answer == 'y' || answer == 'Y') {
                     pipes.at(id).changeofstate();
@@ -237,8 +236,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
         }
         string name;
         cout << "Enter station name to search: ";
-        getline(cin >> ws, name);
-        logger.log(name);
+        INPUT_LINE(cin, name);
 
         auto foundStations = FindKSFilter(stations, checknameks, name);
         if (!foundStations.empty()) {
@@ -251,14 +249,13 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
                 char answer;
                 cout << "Change number of working workshops? (y/n): ";
                 cin >> answer;
-                logger.log(string(1, answer));
+                cerr << answer << endl;
 
                 if (answer == 'y' || answer == 'Y') {
                     int change;
                     cout << "Enter new number of working workshops (current: "
                         << stations.at(id).GetWorkshopsInUse() << "): ";
-                    cin >> change;
-                    logger.log(to_string(change));
+                    change = GetCorrectNumber(0, stations.at(id).GetWorkshops());
 
                     if (stations.at(id).UpdateWorkshopsInUse(change - stations.at(id).GetWorkshopsInUse())) {
                         cout << "Station ID " << id << " workshops updated to " << change << ".\n";
@@ -281,9 +278,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
             break;
         }
         cout << "Enter minimum number of workshops: ";
-        int minWorkshops;
-        cin >> minWorkshops;
-        logger.log(to_string(minWorkshops));
+        int minWorkshops = GetCorrectNumber(0, 1000);
 
         auto foundStations = FindKSFilter(stations, workshops, minWorkshops);
         if (!foundStations.empty()) {
@@ -296,14 +291,13 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
                 char answer;
                 cout << "Change number of working workshops? (y/n): ";
                 cin >> answer;
-                logger.log(string(1, answer));
+                cerr << answer << endl;
 
                 if (answer == 'y' || answer == 'Y') {
                     int change;
                     cout << "Enter new number of working workshops (current: "
                         << stations.at(id).GetWorkshopsInUse() << "): ";
-                    cin >> change;
-                    logger.log(to_string(change));
+                    change = GetCorrectNumber(0, stations.at(id).GetWorkshops());
 
                     if (stations.at(id).UpdateWorkshopsInUse(change - stations.at(id).GetWorkshopsInUse())) {
                         cout << "Station ID " << id << " workshops updated to " << change << ".\n";
@@ -332,8 +326,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
 
         string ids;
         cout << "Enter pipe IDs to delete (space separated): ";
-        getline(cin >> ws, ids);
-        logger.log("Delete pipes: " + ids);
+        INPUT_LINE(cin, ids);
 
         istringstream idStream(ids);
         int id;
@@ -366,8 +359,7 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
 
         string ids;
         cout << "Enter station IDs to delete (space separated): ";
-        getline(cin >> ws, ids);
-        logger.log("Delete stations: " + ids);
+        INPUT_LINE(cin, ids);
 
         istringstream idStream(ids);
         int id;
@@ -396,6 +388,15 @@ void searchAndEdit(unordered_map<int, Pipe>& pipes, unordered_map<int, Compresso
 }
 
 int main() {
+    using namespace std::chrono;
+
+    // Создаем лог-файл с временной меткой
+    redirect_output_wrapper cerr_out(cerr);
+    string time = std::format("{:%d_%m_%Y %H_%M_%OS}", system_clock::now());
+    ofstream logfile("pipeline_log_" + time + ".txt");
+    if (logfile)
+        cerr_out.redirect(logfile);
+
     unordered_map<int, Pipe> pipes;
     unordered_map<int, CompressorStation> stations;
     int choice;
@@ -408,7 +409,7 @@ int main() {
             cout << "Invalid input! Please enter a number.\n";
             continue;
         }
-        logger.log(to_string(choice));
+        cerr << choice << endl;
 
         switch (choice) {
         case 1:

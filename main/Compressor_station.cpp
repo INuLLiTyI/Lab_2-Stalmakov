@@ -98,7 +98,7 @@ istream& operator>>(istream& in, CompressorStation& cs) {
     int workshops, workshopsInWork, efficiency;
 
     cout << "Enter compressor station name: ";
-    getline(in >> ws, name);
+    INPUT_LINE(in, name);
 
     cout << "Enter total number of workshops: ";
     while (!(in >> workshops) || workshops <= 0) {
@@ -106,6 +106,7 @@ istream& operator>>(istream& in, CompressorStation& cs) {
         in.clear();
         in.ignore(10000, '\n');
     }
+    cerr << workshops << endl;
 
     cout << "Enter number of workshops in work: ";
     while (!(in >> workshopsInWork) || workshopsInWork < 0 || workshopsInWork > workshops) {
@@ -113,6 +114,7 @@ istream& operator>>(istream& in, CompressorStation& cs) {
         in.clear();
         in.ignore(10000, '\n');
     }
+    cerr << workshopsInWork << endl;
 
     cout << "Enter efficiency: ";
     while (!(in >> efficiency) || efficiency <= 0) {
@@ -120,6 +122,7 @@ istream& operator>>(istream& in, CompressorStation& cs) {
         in.clear();
         in.ignore(10000, '\n');
     }
+    cerr << efficiency << endl;
 
     cs.id = ++CompressorStation::maxId;
     cs.name = name;

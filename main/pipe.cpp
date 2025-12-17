@@ -41,6 +41,8 @@ void Pipe::Edit() {
     cout << "Set repair status (0 - working, 1 - in repair): ";
     int status;
     cin >> status;
+    cerr << status << endl;
+
     if (cin.fail()) {
         cin.clear();
         cin.ignore(10000, '\n');
@@ -75,7 +77,7 @@ istream& operator>>(istream& in, Pipe& pipe) {
     int diameter;
 
     cout << "Enter pipe name: ";
-    getline(in >> ws, name);
+    INPUT_LINE(in, name);
 
     cout << "Enter length (km): ";
     while (!(in >> length) || length <= 0) {
@@ -83,6 +85,7 @@ istream& operator>>(istream& in, Pipe& pipe) {
         in.clear();
         in.ignore(10000, '\n');
     }
+    cerr << length << endl;
 
     cout << "Enter diameter (mm): ";
     while (!(in >> diameter) || diameter <= 0) {
@@ -90,6 +93,7 @@ istream& operator>>(istream& in, Pipe& pipe) {
         in.clear();
         in.ignore(10000, '\n');
     }
+    cerr << diameter << endl;
 
     pipe.id = ++Pipe::maxId;
     pipe.name = name;

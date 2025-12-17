@@ -1,45 +1,18 @@
 ﻿#pragma once
 #include <iostream>
+#include <string>
+#include <chrono>
+#include <format>
+#include <fstream>
 #include "pipe.h"
 #include "Compressor_station.h"
 #include <unordered_map>
 #include <unordered_set>
-#include <chrono>
-#include <format>
-#include <fstream>
 
 #define INPUT_LINE(in, str) getline(in>>std::ws, str); \
-                        logger.log(str); \
                         std::cerr << str << std::endl
-void fix();
 
-class Logger {
-private:
-    std::ofstream logFile;
-public:
-    Logger() {
-        logFile.open("pipeline_log.txt", std::ios::app);
-        log("=== Application started ===");
-    }
-
-    void log(const std::string& action) {
-        auto now = std::chrono::system_clock::now();
-        auto time = std::chrono::system_clock::to_time_t(now);
-        char timeStr[100];
-        ctime_s(timeStr, sizeof(timeStr), &time);
-        timeStr[24] = '\0';
-        logFile << timeStr << " - " << action << std::endl;
-    }
-
-    ~Logger() {
-        log("=== Application closed ===");
-        if (logFile.is_open()) {
-            logFile.close();
-        }
-    }
-};
-
-extern Logger logger;
+#define PRINT_PARAM(out, x) out<< #x << "=" << x << std::endl
 
 class redirect_output_wrapper
 {
@@ -50,6 +23,7 @@ public:
         :old_buf(src.rdbuf()), stream(src)
     {
     }
+
     ~redirect_output_wrapper() {
         stream.rdbuf(old_buf);
     }
@@ -58,6 +32,22 @@ public:
         stream.rdbuf(dest.rdbuf());
     }
 };
+
+template <typename T>
+T GetCorrectNumber(T min, T max)
+{
+    T x;
+    while ((std::cin >> x).fail()    // check type
+        || std::cin.peek() != '\n'    // is buffer empty (int/float check)
+        || x < min || x > max)        // check range
+    {
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        std::cout << "Type number (" << min << "-" << max << "):";
+    }
+    std::cerr << x << std::endl;
+    return x;
+}
 
 bool checknamepipe(const Pipe& p, std::string param);
 bool checkstate(const Pipe& p, bool param);
@@ -96,21 +86,4 @@ std::unordered_set<int> FindKSFilter(const std::unordered_map<int, CompressorSta
         }
     }
     return res;
-}
-
-template <typename T>
-T GetCorrectNumber(T min, T max)
-{
-    T x;
-    while ((std::cin >> x).fail()
-        || std::cin.peek() != '\n'
-        || x < min || x > max)
-    {
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Enter a correct value: ";
-    }
-    logger.log(std::to_string(x));
-    std::cerr << x << std::endl;
-    return x;
 }

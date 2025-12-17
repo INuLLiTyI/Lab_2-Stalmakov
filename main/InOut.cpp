@@ -2,9 +2,6 @@
 #include "InOut.h"
 #include <string>
 #include <fstream>
-#include "Tools.h"
-#include <unordered_map>
-#include <algorithm>
 
 using namespace std;
 
