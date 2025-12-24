@@ -1,36 +1,38 @@
 #pragma once
+#pragma once
 #include <iostream>
-#include <fstream>
 #include <string>
+#include <fstream>
 #include <istream>
+
 
 class Pipe {
 private:
-    static int maxId;
-    int id;
     std::string name;
-    float length;
+    int length;
     int diameter;
-    bool inRepair;
-
+    bool state;
+    int id;
+    int ksleftid;
+    int ksrightid;
+    static int maxid;
 public:
     Pipe();
-    Pipe(const std::string& name, float length, int diameter, bool inRepair);
-
-    int GetId() const;
-    static int GetMaxId();
-    static void SetMaxId(int newMaxId);
-    std::string GetName() const;
-    bool GetState() const;
-    float GetLength() const;
-    int GetDiameter() const;
-
+    Pipe(std::string name, int length, int diameter, bool state, int ksleftid, int ksrightid);
+    int GetId();
+    std::string Getname() const;
+    void SetKs(int LeftKs, int RightKs);
+    void SetDiameter(int diameter);
+    bool Getstate() const;
+    void SetState(bool newState) { state = newState; }
     void changeofstate();
-    void Edit();
-    void Print() const;
+    int GetDiameter();
+    int GetLeftKs();
+    int GetRightKs();
 
-    friend std::ostream& operator<<(std::ostream& out, const Pipe& pipe);
-    friend std::istream& operator>>(std::istream& in, Pipe& pipe);
-    friend std::ifstream& operator>>(std::ifstream& fin, Pipe& p);
-    friend std::ofstream& operator<<(std::ofstream& fout, const Pipe& p);
+    friend std::ifstream& operator >> (std::ifstream& fin, Pipe& p);
+    friend std::ofstream& operator << (std::ofstream& fout, const Pipe& p);
+
+    friend std::istream& operator >> (std::istream& in, Pipe& p);
+    friend std::ostream& operator << (std::ostream& out, const Pipe& p);
 };

@@ -19,17 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\main\Compressor_station.cpp" />
+    <ClCompile Include="..\..\main\GasNet.cpp" />
     <ClCompile Include="..\..\main\InOut.cpp" />
-    <ClCompile Include="..\..\main\main.cpp" />
-    <ClCompile Include="..\..\main\pipe.cpp" />
-    <ClCompile Include="..\..\main\Tools.cpp" />
+    <ClCompile Include="..\..\main\KS.cpp" />
+    <ClCompile Include="..\..\main\KS.h" />
+    <ClCompile Include="..\..\main\Pipe.h" />
+    <ClCompile Include="Stalmakov.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\main\Compressor_station.h" />
+    <ClInclude Include="..\..\main\GasNet.h" />
     <ClInclude Include="..\..\main\InOut.h" />
-    <ClInclude Include="..\..\main\pipe.h" />
-    <ClInclude Include="..\..\main\Tools.h" />
+    <ClInclude Include="..\..\main\Pipe.cpp" />
+    <ClInclude Include="..\..\main\Tools.cpp" />
+    <ClInclude Include="Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\main\.gitignore" />

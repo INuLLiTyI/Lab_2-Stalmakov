@@ -2,51 +2,53 @@
 #include "InOut.h"
 #include <string>
 #include <fstream>
+#include "Tools.h"
+#include <unordered_map>
 
-using namespace std;
 
-unordered_map<int, Pipe> PipesCreate(unordered_map<int, Pipe>& m) {
+std::unordered_map<int, Pipe> PipesCreate(std::unordered_map<int, Pipe>& m) {
     Pipe p;
-    cin >> p;
+    std::cin >> p;
     m.emplace(p.GetId(), p);
     return m;
 }
 
-unordered_map<int, CompressorStation> KSCreate(unordered_map<int, CompressorStation>& m) {
-    CompressorStation g;
-    cin >> g;
+std::unordered_map<int, KS> KSCreate(std::unordered_map<int, KS>& m) {
+    KS g;
+    std::cin >> g;
     m.emplace(g.GetId(), g);
     return m;
 }
 
-void PipesPrint(unordered_map<int, Pipe>& m) {
+
+void PipesPrint(std::unordered_map<int, Pipe>& m) {
     if (m.empty()) {
-        cout << '\n';
-        cout << "No any pipes existing!" << endl;
+        std::cout << '\n';
+        std::cout << "Труб нет" << std::endl;
         return;
     }
     for (const auto& Pipe : m) {
-        cout << Pipe.second;
+        std::cout << Pipe.second;
     }
 }
 
-void KSPrint(unordered_map<int, CompressorStation>& m) {
+void KSPrint(std::unordered_map<int, KS>& m) {
     if (m.empty()) {
-        cout << "No any CS existing!" << endl;
-        cout << '\n';
+        std::cout << "КС нет" << std::endl;
+        std::cout << '\n';
         return;
     }
     for (const auto& KS : m) {
-        cout << KS.second;
+        std::cout << KS.second;
     }
 }
 
-void Load(unordered_map<int, Pipe>& Pipemap, unordered_map<int, CompressorStation>& KSmap) {
-    ifstream fin;
-    string data;
+void Load(std::unordered_map<int, Pipe>& Pipemap, std::unordered_map<int, KS>& KSmap) {
+    std::ifstream fin;
+    std::string data;
 
-    cout << "Input filename: ";
-    INPUT_LINE(cin, data);
+    std::cout << "Введите имя файла: ";
+    INPUT_LINE(std::cin, data);
 
     fin.open(data);
 
@@ -58,32 +60,62 @@ void Load(unordered_map<int, Pipe>& Pipemap, unordered_map<int, CompressorStatio
         fin >> countks;
         LoadObject(KSmap, countks, fin);
 
-        cout << "Data added succesfully!" << endl;
+        std::cout << "Данные успешно загружены" << std::endl;
     }
     else {
-        cout << "Error occured! Please, check if the input format is correct." << endl;
+        std::cout << "Произошла ошибка. Обратитесь в поддержку или попробуйте снова." << std::endl;
     }
     fin.close();
 }
 
-void ChangePipe(unordered_map<int, Pipe>& Pipemap, unordered_set<int>& res) {
-    for (int id : res) {
+void ChangePipe(std::unordered_map<int, Pipe>& Pipemap, std::unordered_set <int>& res) {
+    std::string idInput;
+    std::cout << "Введите ID объектов для изменения (через пробел): ";
+    INPUT_LINE(std::cin, idInput);
+    std::istringstream idStream(idInput);
+    std::unordered_set<int> ids;
+    int id;
+    while (idStream >> id) {
+        ids.emplace(id);
+    }
+
+
+    for (int id : ids) {
+        if (res.find(id) == res.end()) {
+            std::cout << "Объект с ID " << id << " не найден.\n";
+            continue;
+        }
         Pipemap.at(id).changeofstate();
-        cout << "Object with ID " << id << " successfully modified\n";
+        std::cout << "Объект с ID " << id << " успешно изменены\n";
     }
 }
 
-void ChangeKS(unordered_map<int, CompressorStation>& KSmap, unordered_set<int>& res) {
-    int change;
-    cout << "Enter number of workshops to change: ";
-    change = GetCorrectNumber(-100, 100);
+void ChangeKS(std::unordered_map<int, KS>& KSmap, std::unordered_set <int>& res) {
+    std::string idInput;
+    std::cout << "Введите ID объектов для изменения (через пробел): ";
+    INPUT_LINE(std::cin, idInput);
 
-    for (int id : res) {
+    std::istringstream idStream(idInput);
+    std::unordered_set<int> ids;
+    int id;
+    while (idStream >> id) {
+        ids.emplace(id);
+    }
+    int change;
+    std::cout << "Введите количество цехов ";
+    change = GetCorrectNumber(0, 100);
+
+    for (int id : ids) {
+        if (res.find(id) == res.end()) {
+            std::cout << "Объект с ID " << id << " не найден.\n";
+            continue;
+        }
+
         if (KSmap.at(id).UpdateWorkshopsInUse(change)) {
-            cout << "Object with ID " << id << " successfully modified\n";
+            std::cout << "Объект с ID" << id << " успешно изменены\n";
         }
         else {
-            cout << "Object modification error." << endl;
+            std::cout << "Ошибка в процессе изменения объекта" << std::endl;
         }
     }
 }

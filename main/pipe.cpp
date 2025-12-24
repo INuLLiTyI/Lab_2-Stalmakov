@@ -1,138 +1,152 @@
-п»ї#include <cmath>
-#include "pipe.h"
 #include <iostream>
-#include <iomanip>
-#include <fstream>
+#include "Pipe.h"
 #include "Tools.h"
-using namespace std;
+#include "InOut.h"
 
-int Pipe::maxId = 0;
 
-Pipe::Pipe() {
-    id = 0;
-    name = "";
-    length = 0.0f;
+int Pipe::maxid = 0;
+
+
+Pipe::Pipe()
+{
+    name = "None";
+    length = 0;
     diameter = 0;
-    inRepair = false;
+    state = 0;
+    ksleftid = 0;
+    ksrightid = 0;
 }
 
-Pipe::Pipe(const string& name, float length, int diameter, bool inRepair) {
-    id = ++maxId;
+Pipe::Pipe(std::string name, int length, int diameter, bool state, int ksleftid, int ksrightid) {
     this->name = name;
     this->length = length;
     this->diameter = diameter;
-    this->inRepair = inRepair;
+    this->state = state;
+    this->id = ++maxid;
+    this->ksleftid = ksleftid;
+    this->ksrightid = ksrightid;
 }
 
-int Pipe::GetId() const { return id; }
-int Pipe::GetMaxId() { return maxId; }
-void Pipe::SetMaxId(int newMaxId) { maxId = newMaxId; }
-string Pipe::GetName() const { return name; }
-bool Pipe::GetState() const { return inRepair; }
-float Pipe::GetLength() const { return length; }
-int Pipe::GetDiameter() const { return diameter; }
 
-void Pipe::changeofstate() {
-    inRepair = !inRepair;
+
+bool Pipe::Getstate() const
+{
+    return state;
 }
 
-void Pipe::Edit() {
-    cout << "Edit pipe (current repair status: " << (inRepair ? "in repair" : "working") << "):\n";
-    cout << "Set repair status (0 - working, 1 - in repair): ";
-    int status;
-    cin >> status;
-    cerr << status << endl;
-
-    if (cin.fail()) {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Invalid input! Status unchanged.\n";
-    }
-    else {
-        inRepair = (status == 1);
-    }
+void Pipe::changeofstate()
+{
+    state = !state;
 }
 
-void Pipe::Print() const {
-    cout << "Name: " << name << endl;
-    cout << fixed << setprecision(2);
-    cout << "Length: " << length << " km" << endl;
-    cout << "Diameter: " << diameter << " mm" << endl;
-    cout << "Status: " << (inRepair ? "In repair" : "Operational") << endl;
+int Pipe::GetDiameter()
+{
+    return diameter;
 }
 
-ostream& operator<<(ostream& out, const Pipe& pipe) {
-    out << pipe.id << endl;
-    out << pipe.name << endl;
-    out << fixed << setprecision(6);
-    out << pipe.length << endl;
-    out << pipe.diameter << endl;
-    out << pipe.inRepair << endl;
-    return out;
+int Pipe::GetLeftKs()
+{
+    return ksleftid;
 }
 
-istream& operator>>(istream& in, Pipe& pipe) {
-    string name;
-    float length;
-    int diameter;
-
-    cout << "Enter pipe name: ";
-    INPUT_LINE(in, name);
-
-    cout << "Enter length (km): ";
-    while (!(in >> length) || length <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        in.clear();
-        in.ignore(10000, '\n');
-    }
-    cerr << length << endl;
-
-    cout << "Enter diameter (mm): ";
-    while (!(in >> diameter) || diameter <= 0) {
-        cout << "Invalid input! Enter positive number: ";
-        in.clear();
-        in.ignore(10000, '\n');
-    }
-    cerr << diameter << endl;
-
-    pipe.id = ++Pipe::maxId;
-    pipe.name = name;
-    pipe.length = length;
-    pipe.diameter = diameter;
-    pipe.inRepair = false;
-
-    return in;
+int Pipe::GetRightKs()
+{
+    return ksrightid;
 }
 
-ifstream& operator>>(ifstream& fin, Pipe& p) {
-    int id;
-    string name;
-    float length;
-    int diameter;
-    bool inRepair;
-
-    fin >> id;
-    getline(fin >> ws, name);
-    fin >> length;
-    fin >> diameter;
-    fin >> inRepair;
-
-    p.id = id;
-    p.name = name;
-    p.length = length;
-    p.diameter = diameter;
-    p.inRepair = inRepair;
-
-    Pipe::maxId = max(Pipe::maxId, id);
-
+std::ifstream& operator>>(std::ifstream& fin, Pipe& p)
+{
+    fin >> p.id;
+    fin >> p.ksleftid;
+    fin >> p.ksrightid;
+    fin >> std::ws;
+    getline(fin, p.name);
+    fin >> p.length;
+    fin >> p.diameter;
+    fin >> p.state;
+    p.maxid = p.id;
     return fin;
 }
 
-ofstream& operator<<(ofstream& fout, const Pipe& p) {
-    fout << p.id << endl
-        << p.name << endl
-        << p.length << endl
-        << p.diameter << endl
-        << p.inRepair << endl;
+std::ofstream& operator<<(std::ofstream& fout, const Pipe& p)
+{
+    fout << p.id << std::endl << p.ksleftid << std::endl << p.ksrightid << std::endl << p.name << std::endl << p.length << std::endl << p.diameter << std::endl << p.state << std::endl;
     return fout;
 }
+
+std::istream& operator>>(std::istream& in, Pipe& p)
+{
+    std::cout << "Введите имя трубы: ";
+    INPUT_LINE(in, p.name);
+    p.id = ++p.maxid;
+    std::cout << "Введите длину: ";
+    p.length = GetCorrectNumber(1, 10000);
+    std::cout << "Введите диаметр: ";
+    p.diameter = GetCorrectNumber(1, 10000);
+    std::cout << "Введите состояние: ";
+    p.state = GetCorrectNumber(0, 1);
+    p.ksleftid = 0;
+    p.ksrightid = 0;
+    std::cout << std::endl;
+    return in;
+}
+
+std::ostream& operator<<(std::ostream& out, const Pipe& p)
+{
+    out << "\n";
+    out << "id: " << p.id << std::endl;
+    if (!(p.ksleftid == 0 && p.ksrightid == 0)) {
+        out << "id левой кс: " << p.ksleftid << std::endl;
+        out << "id правой кс: " << p.ksrightid << std::endl;
+    }
+    out << "Имя трубы: " << p.name << std::endl;
+    out << "Длина: " << p.length << std::endl;
+    out << "Диаметр: " << p.diameter << std::endl;
+    out << "Состояние: " << (p.state ? "Исправна" : "В ремонте") << std::endl << std::endl;
+    return out;
+
+}
+
+int Pipe::GetId()
+{
+    return id;
+}
+
+std::string Pipe::Getname() const
+{
+    return name;
+}
+
+void Pipe::SetKs(int LeftKs, int RightKs) {
+    ksleftid = LeftKs;
+    ksrightid = RightKs;
+}
+
+void Pipe::SetDiameter(int diameter) {
+    this->diameter = diameter;
+}pe::Getname() const
+{
+    return name;
+}
+
+void Pipe::SetKs(int LeftKs, int RightKs) {
+    ksleftid = LeftKs;
+    ksrightid = RightKs;
+}
+
+void Pipe::SetDiameter(int diameter) {
+    this->diameter = diameter;
+}st;
+    bool GetState() const;
+    float GetLength() const;
+    int GetDiameter() const;
+
+    void changeofstate();
+    void Edit();
+    void Print() const;
+
+    friend std::ostream& operator<<(std::ostream& out, const Pipe& pipe);
+    friend std::istream& operator>>(std::istream& in, Pipe& pipe);
+    friend std::ifstream& operator>>(std::ifstream& fin, Pipe& p);
+    friend std::ofstream& operator<<(std::ofstream& fout, const Pipe& p);
+};

@@ -15,34 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\main\Compressor_station.cpp">
+    <ClCompile Include="..\..\main\GasNet.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="..\..\main\InOut.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\main\main.cpp">
+    <ClCompile Include="..\..\main\KS.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\main\pipe.cpp">
+    <ClCompile Include="..\..\main\KS.h">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\main\Tools.cpp">
+    <ClCompile Include="..\..\main\Pipe.h">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Stalmakov.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\main\Compressor_station.h">
+    <ClInclude Include="..\..\main\GasNet.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="..\..\main\InOut.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\main\pipe.h">
+    <ClInclude Include="..\..\main\Pipe.cpp">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\main\Tools.h">
+    <ClInclude Include="..\..\main\Tools.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
